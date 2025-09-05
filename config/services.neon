@@ -1,7 +1,7 @@
 services:
 	- App\Core\RouterFactory::createRouter
 	userAuthenticator:
-	    factory: App\Model\Security\UserAuthenticator
+	    factory: App\Core\Security\UserAuthenticator
 	    autowired: true
 	security.user:
 	    factory: Nette\Security\User

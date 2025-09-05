@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Model\Security;
 
+use App\Core\Security\UserAuthenticator;
 use App\Model\Entities\User;
 use App\Model\Repositories\UserRepository;
-use App\Model\Security\UserAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Mockery;
 use Nette\Security\AuthenticationException;

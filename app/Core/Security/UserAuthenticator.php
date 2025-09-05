@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Model\Security;
+namespace App\Core\Security;
 
 use App\Model\Entities\User;
 use App\Model\Repositories\UserRepository;
