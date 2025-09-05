@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Book;
 
+use App\Model\Services\BookService;
 use Doctrine\ORM\EntityRepository;
 use Nette\Application\UI\Presenter;
 use App\Model\Entities\Book;
@@ -11,14 +12,11 @@ use Nette\Application\UI\Form;
 
 class BookPresenter extends Presenter
 {
-    private EntityRepository $bookRepo;
+    public function __construct(
+        private BookService $bookService
+    ){}
 
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->bookRepo = $em->getRepository(Book::class);
-    }
-
-    protected function startup()
+    protected function startup(): void
     {
         parent::startup();
         if (!$this->getUser()->isLoggedIn()) {
@@ -28,12 +26,12 @@ class BookPresenter extends Presenter
 
     public function renderDefault(): void
     {
-        $this->template->books = $this->bookRepo->findAll();
+        $this->template->books = $this->bookService->getAll();
     }
 
     public function renderDetail(int $id): void
     {
-        $book = $this->bookRepo->findById($id);
+       $book = $this->bookService->getById($id);
 
         if (!$book) {
             $this->error('Book was not found.');
@@ -66,9 +64,7 @@ class BookPresenter extends Presenter
             $this->error('You are not authorized to perform this action.', 403);
         }
 
-        $book = new Book($values->title, $values->author, $values->year, $values->isbn);
-
-        $this->bookRepo->saveBook($book);
+        $this->bookService->create($values->title, $values->author, $values->year, $values->isbn);
 
         $this->flashMessage('Book has been added.', 'success');
         $this->redirect('Book:default');
@@ -90,12 +86,12 @@ class BookPresenter extends Presenter
             $this->error('You are not authorized to perform this action.', 403);
         }
 
-        $book = $this->bookRepo->find($values->id);
+        $book = $this->bookService->getById((int) $values->id);
         if (!$book) {
             $this->error('Book was not found.');
         }
 
-        $this->bookRepo->deleteBook($book);
+        $this->bookService->delete($book);
 
         $this->flashMessage('Book has been deleted.', 'success');
         $this->redirect('Book:default');
