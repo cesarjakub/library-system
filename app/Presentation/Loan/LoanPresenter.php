@@ -33,7 +33,7 @@ final class LoanPresenter extends Presenter
 
     public function renderDefault(): void
     {
-        $this->template->loans = $this->loanRepo->getBook();
+        $this->template->loans = $this->loanRepo->findAll();
     }
 
     protected function createComponentLoanForm(): Form

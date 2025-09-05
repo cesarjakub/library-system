@@ -20,14 +20,14 @@ class LoanRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function getLoan(int $id): object
+    public function findById(int $id): object
     {
         return $this->find($id);
     }
 
-    public function getAllLoans(): array
+    public function findAll(): array
     {
-        return $this->findAll();
+        return parent::findAll();
     }
 
     public function markReturned(Loan $loan): void

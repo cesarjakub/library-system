@@ -33,7 +33,7 @@ class BookPresenter extends Presenter
 
     public function renderDetail(int $id): void
     {
-        $book = $this->bookRepo->getBook($id);
+        $book = $this->bookRepo->findById($id);
 
         if (!$book) {
             $this->error('Book was not found.');

@@ -31,7 +31,7 @@ class UserRepository extends EntityRepository
         return $this->findAll();
     }
 
-    public function findUserByEmail(string $email): object
+    public function findByEmail(string $email): object
     {
         return $this->findOneBy(['email' => $email]);
     }
