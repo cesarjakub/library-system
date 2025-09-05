@@ -4,18 +4,16 @@ declare(strict_types=1);
 namespace App\Presentation\Register;
 
 use App\Model\Entities\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use App\Model\Services\UserService;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 
 final class RegisterPresenter extends Presenter
 {
-    private EntityRepository $userRepo;
 
-    public function __construct(EntityManagerInterface $em){
-        $this->userRepo = $em->getRepository(User::class);
-    }
+    public function __construct(
+        private UserService $userService
+    ){}
 
     protected function startup(): void
     {
@@ -50,14 +48,12 @@ final class RegisterPresenter extends Presenter
 
     private function registerFormSucceeded(Form $form, \stdClass $values): void
     {
-        if ($this->userRepo->findOneBy(['email' => $values->email])) {
+        if ($this->userService->getUserByEmail($values->email) != null) {
             $this->flashMessage('A user with this email already exists.', 'error');
             return;
         }
 
-        $user = new User($values->email, $values->password);
-
-        $this->userRepo->saveBook($user);
+        $this->userService->create($values->email, $values->password);
 
         $this->flashMessage('Registration successful', 'success');
         $this->redirect('Sign:in');

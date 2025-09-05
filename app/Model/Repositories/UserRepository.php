@@ -21,17 +21,17 @@ class UserRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function getUser(int $id): object
+    public function findById(int $id): object
     {
         return $this->find($id);
     }
 
-    public function getAllUsers(): array
+    public function findAllUsers(): array
     {
         return $this->findAll();
     }
 
-    public function findByEmail(string $email): object
+    public function findByEmail(string $email): ?object
     {
         return $this->findOneBy(['email' => $email]);
     }

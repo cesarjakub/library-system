@@ -11,9 +11,9 @@ use Nette\Security\User;
 
 final class SignPresenter extends Presenter
 {
-    public function __construct(private User $user)
-    {
-    }
+    public function __construct(
+        private User $user
+    ){}
 
     protected function startup(): void
     {

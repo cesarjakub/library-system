@@ -3,25 +3,20 @@ declare(strict_types=1);
 
 namespace App\Core\Security;
 
-use App\Model\Entities\User;
-use App\Model\Repositories\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\UserService;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Authenticator;
 use Nette\Security\SimpleIdentity;
 
 class UserAuthenticator implements Authenticator
 {
-    private UserRepository $userRepository;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->userRepository = $em->getRepository(User::class);
-    }
+    public function __construct(
+        private UserService $userService
+    ){}
 
     function authenticate(string $email, string $password): SimpleIdentity
     {
-        $user = $this->userRepository->findByEmail($email);
+        $user = $this->userService->getUserByEmail($email);
 
         if (!$user || !$user->verifyPassword($password)) {
             throw new AuthenticationException('Invalid credentials');

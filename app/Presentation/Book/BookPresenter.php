@@ -4,10 +4,7 @@ declare(strict_types=1);
 namespace App\Presentation\Book;
 
 use App\Model\Services\BookService;
-use Doctrine\ORM\EntityRepository;
 use Nette\Application\UI\Presenter;
-use App\Model\Entities\Book;
-use Doctrine\ORM\EntityManagerInterface;
 use Nette\Application\UI\Form;
 
 class BookPresenter extends Presenter
