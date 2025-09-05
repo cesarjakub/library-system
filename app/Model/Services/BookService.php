@@ -20,7 +20,7 @@ class BookService
 
     public function getAll(): array
     {
-        return $this->bookRepository->findAll();
+        return $this->bookRepository->findAllBooks();
     }
 
     public function getById(int $id): Book

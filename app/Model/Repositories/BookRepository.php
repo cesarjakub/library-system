@@ -27,8 +27,8 @@ class BookRepository extends EntityRepository
         return $this->find($id);
     }
 
-    public function findAll(): array
+    public function findAllBooks(): array
     {
-        return parent::findAll();
+        return $this->findAll();
     }
 }
