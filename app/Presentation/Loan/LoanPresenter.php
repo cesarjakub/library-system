@@ -33,7 +33,7 @@ final class LoanPresenter extends Presenter
 
     public function renderDefault(): void
     {
-        $this->template->loans = $this->loanRepo->findActiveLoans();
+        $this->template->loans = $this->loanRepo->getBook();
     }
 
     protected function createComponentLoanForm(): Form
@@ -71,7 +71,9 @@ final class LoanPresenter extends Presenter
         $user = $this->userRepo->find($values->user);
         $book = $this->bookRepo->find($values->book);
 
-        $this->loanRepo->createLoan($user, $book);
+        $loan = new Loan($user, $book);
+
+        $this->loanRepo->saveLoan($loan);
 
         $this->flashMessage('Loan created.', 'success');
         $this->redirect('Loan:default');

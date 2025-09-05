@@ -21,7 +21,7 @@ class UserAuthenticator implements Authenticator
 
     function authenticate(string $email, string $password): SimpleIdentity
     {
-        $user = $this->userRepository->findByEmail($email);
+        $user = $this->userRepository->findUserByEmail($email);
 
         if (!$user || !$user->verifyPassword($password)) {
             throw new AuthenticationException('Invalid credentials');

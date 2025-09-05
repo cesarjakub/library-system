@@ -57,7 +57,7 @@ final class RegisterPresenter extends Presenter
 
         $user = new User($values->email, $values->password);
 
-        $this->userRepo->addUser($user);
+        $this->userRepo->saveBook($user);
 
         $this->flashMessage('Registration successful', 'success');
         $this->redirect('Sign:in');

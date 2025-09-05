@@ -33,7 +33,7 @@ class BookPresenter extends Presenter
 
     public function renderDetail(int $id): void
     {
-        $book = $this->bookRepo->findById($id);
+        $book = $this->bookRepo->getBook($id);
 
         if (!$book) {
             $this->error('Book was not found.');
@@ -68,7 +68,7 @@ class BookPresenter extends Presenter
 
         $book = new Book($values->title, $values->author, $values->year, $values->isbn);
 
-        $this->bookRepo->addBook($book);
+        $this->bookRepo->saveBook($book);
 
         $this->flashMessage('Book has been added.', 'success');
         $this->redirect('Book:default');
@@ -95,7 +95,7 @@ class BookPresenter extends Presenter
             $this->error('Book was not found.');
         }
 
-        $this->bookRepo->removeBook($book);
+        $this->bookRepo->deleteBook($book);
 
         $this->flashMessage('Book has been deleted.', 'success');
         $this->redirect('Book:default');

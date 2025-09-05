@@ -40,6 +40,8 @@ final class LoanRepositoryTest extends TestCase
         $user = Mockery::mock(User::class);
         $book = Mockery::mock(Book::class);
 
+        $realLoan = new Loan($user, $book);
+
         $persistedLoan = null;
 
         $this->em->shouldReceive('persist')
@@ -52,7 +54,7 @@ final class LoanRepositoryTest extends TestCase
         $this->em->shouldReceive('flush')
             ->once();
 
-        $this->loanRepository->createLoan($user, $book);
+        $this->loanRepository->saveLoan($realLoan);
 
         Assert::type(Loan::class, $persistedLoan);
         Assert::same($user, $persistedLoan->getUser());

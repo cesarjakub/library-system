@@ -10,20 +10,25 @@ use Doctrine\ORM\EntityRepository;
 class BookRepository extends EntityRepository
 {
 
-    public function findById(int $id): ?Book
-    {
-        return $this->find($id);
-    }
-
-    public function addBook(Book $book): void
+    public function saveBook(Book $book): void
     {
         $this->_em->persist($book);
         $this->_em->flush();
     }
 
-    public function removeBook(Book $book): void
+    public function deleteBook(Book $book): void
     {
         $this->_em->remove($book);
         $this->_em->flush();
+    }
+
+    public function getBook(int $id): object
+    {
+        return $this->find($id);
+    }
+
+    public function getAllBooks(): array
+    {
+        return $this->findAll();
     }
 }
