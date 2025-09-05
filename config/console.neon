@@ -1,0 +1,9 @@
+extensions:
+    nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension(%consoleMode%)
+    nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension(%consoleMode%)
+    contributte.console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+
+contributte.console:
+	url: http://localhost
+	name: Knihovna
+	version: '1.0'

@@ -1,0 +1,30 @@
+extensions:
+    nettrine.annotations: Nettrine\Annotations\DI\AnnotationsExtension
+    nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+    nettrine.orm: Nettrine\ORM\DI\OrmExtension
+    nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
+    nettrine.cache: Nettrine\Cache\DI\CacheExtension
+
+nettrine.annotations:
+	debug: true
+
+nettrine.dbal:
+	debug:
+		panel: %debugMode%
+		sourcePaths: [%appDir%]
+
+	connection:
+		host: 127.0.0.1
+		user: root
+		password:
+		dbname: knihovna
+		driver: mysqli
+		charset: UTF8
+
+nettrine.orm:
+	configuration:
+		autoGenerateProxyClasses: true
+
+nettrine.orm.attributes:
+	mapping:
+		App\Model\Entities: %appDir%/Model/Entities

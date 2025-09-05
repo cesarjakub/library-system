@@ -1,0 +1,20 @@
+services:
+	- App\Core\RouterFactory::createRouter
+	userAuthenticator:
+	    factory: App\Model\Security\UserAuthenticator
+	    autowired: true
+	security.user:
+	    factory: Nette\Security\User
+	    setup:
+	        - setAuthenticator(@userAuthenticator)
+	- App\Command\ImportBooksCommand
+	- App\Command\ListLoansCommand
+	- App\Command\SeedUsersCommand
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Facade
+			- *Factory
+			#- *Repository
+			- *Service

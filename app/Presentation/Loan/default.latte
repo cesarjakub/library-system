@@ -1,0 +1,34 @@
+{block content}
+<div class="d-flex justify-content-between mb-3 flex-wrap">
+    <a n:href="Book:default" class="btn btn-outline-secondary btn-sm mb-2">← GO Back</a>
+    <a n:href="Loan:add" class="btn btn-success btn-sm mb-2">+ Add new loan</a>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+    <tr>
+        <th>Book</th>
+        <th>User</th>
+        <th>Loaned at</th>
+        <th>Returned at</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $loans as $loan}
+        <tr>
+            <td>{$loan->getBook()->getTitle()}</td>
+            <td>{$loan->getUser()->getEmail()}</td>
+            <td>{$loan->getLoanedAt()|date:'d.m.Y H:i'}</td>
+            <td>
+                {if $loan->getReturnedAt()}
+                    Returned {$loan->getReturnedAt()|date:'d.m.Y H:i'}
+                {else}
+                    <a n:href="return! $loan->getId()" class="btn btn-warning btn-sm">
+                        Mark as returned
+                    </a>
+                {/if}
+            </td>
+        </tr>
+    {/foreach}
+    </tbody>
+</table>

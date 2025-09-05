@@ -1,0 +1,16 @@
+# Composer
+/vendor/
+
+# Nette runtime
+/temp/
+!/temp/.gitkeep
+/log/
+!/log/.gitkeep
+
+# IDE & OS
+/.idea/
+/.vscode/
+.DS_Store
+
+# Node.js (pokud používáš)
+/node_modules/

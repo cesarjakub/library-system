@@ -1,0 +1,24 @@
+{block content}
+<p>
+    <a n:href="Loan:default" class="btn btn-outline-secondary btn-sm mb-2">← GO Back</a>
+</p>
+
+<form n:name=loanForm class="form">
+    <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
+        <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+    </ul>
+
+    <div class="mb-3">
+        {label user}User:{/label}
+        {input user, class: "form-select"}
+    </div>
+
+    <div class="mb-3">
+        {label book}Book:{/label}
+        {input book, class: "form-select"}
+    </div>
+
+    <div>
+        {input send, class: "btn btn-primary"}
+    </div>
+</form>

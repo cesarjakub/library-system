@@ -1,0 +1,38 @@
+{block content}
+<h1 class="mb-4">Add new book</h1>
+
+    <form n:name=bookForm class="form mb-3">
+        <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
+            <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+        </ul>
+
+        <div class="mb-3">
+            {label title}Title:{/label}
+            {input title, class: "form-control"}
+        </div>
+
+        <div class="mb-3">
+            {label author}Author:{/label}
+            {input author, class: "form-control"}
+        </div>
+
+        <div class="mb-3">
+            {label year}Year:{/label}
+            {input year, class: "form-control"}
+        </div>
+
+        <div class="mb-3">
+            {label isbn}ISBN:{/label}
+            {input isbn, class: "form-control"}
+        </div>
+
+        <div>
+            {input send, class: "btn btn-primary"}
+        </div>
+    </form>
+
+
+<p>
+    <a n:href="Book:default" class="btn btn-outline-secondary btn-sm mb-2">← GO Back</a>
+</p>
+{/block}
