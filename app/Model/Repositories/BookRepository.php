@@ -10,13 +10,13 @@ use Doctrine\ORM\EntityRepository;
 class BookRepository extends EntityRepository
 {
 
-    public function saveBook(Book $book): void
+    public function save(Book $book): void
     {
         $this->_em->persist($book);
         $this->_em->flush();
     }
 
-    public function deleteBook(Book $book): void
+    public function delete(Book $book): void
     {
         $this->_em->remove($book);
         $this->_em->flush();

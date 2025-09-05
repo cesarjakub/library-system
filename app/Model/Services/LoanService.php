@@ -33,17 +33,18 @@ class LoanService
     public function create(User $user, Book $book): Loan
     {
         $loan = new Loan($user, $book);
-        $this->loanRepository->saveLoan($loan);
+        $this->loanRepository->save($loan);
         return $loan;
     }
 
     public function delete(Loan $loan): void
     {
-        $this->loanRepository->deleteLoan($loan);
+        $this->loanRepository->delete($loan);
     }
 
     public function markReturned(Loan $loan): void
     {
-        $this->loanRepository->markReturned($loan);
+        $loan->setReturnedAt(new \DateTimeImmutable());
+        $this->loanRepository->save($loan);
     }
 }

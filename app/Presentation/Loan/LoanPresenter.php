@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Presentation\Loan;
 
-use App\Model\Entities\Loan;
 use App\Model\Services\BookService;
 use App\Model\Services\LoanService;
 use App\Model\Services\UserService;

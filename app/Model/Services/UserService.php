@@ -36,12 +36,12 @@ class UserService
     public function create(string $email, string $password): User
     {
         $user = new User($email, $password);
-        $this->userRepository->saveUser($user);
+        $this->userRepository->save($user);
         return $user;
     }
 
     public function delete(User $user): void
     {
-        $this->userRepository->removeUser($user);
+        $this->userRepository->delete($user);
     }
 }

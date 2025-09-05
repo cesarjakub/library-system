@@ -9,13 +9,13 @@ use Doctrine\ORM\EntityRepository;
 class UserRepository extends EntityRepository
 {
 
-    public function saveUser(User $user): void
+    public function save(User $user): void
     {
         $this->_em->persist($user);
         $this->_em->flush();
     }
 
-    public function removeUser(User $user): void
+    public function delete(User $user): void
     {
         $this->_em->remove($user);
         $this->_em->flush();

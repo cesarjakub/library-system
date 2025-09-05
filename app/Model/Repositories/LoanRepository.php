@@ -8,13 +8,13 @@ use Doctrine\ORM\EntityRepository;
 
 class LoanRepository extends EntityRepository
 {
-    public function saveLoan(Loan $loan): void
+    public function save(Loan $loan): void
     {
         $this->_em->persist($loan);
         $this->_em->flush();
     }
 
-    public function deleteLoan(Loan $loan): void
+    public function delete(Loan $loan): void
     {
         $this->_em->remove($loan);
         $this->_em->flush();
@@ -28,11 +28,5 @@ class LoanRepository extends EntityRepository
     public function findAllLoans(): array
     {
         return parent::findAll();
-    }
-
-    public function markReturned(Loan $loan): void
-    {
-        $loan->setReturnedAt(new \DateTimeImmutable());
-        $this->_em->flush();
     }
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Presentation\Register;
 
-use App\Model\Entities\User;
 use App\Model\Services\UserService;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;

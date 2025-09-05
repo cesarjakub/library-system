@@ -31,13 +31,13 @@ class BookService
     public function create(string $title, string $author, int $year, string $isbn): Book
     {
         $book = new Book($title, $author, $year, $isbn);
-        $this->bookRepository->saveBook($book);
+        $this->bookRepository->save($book);
         return $book;
     }
 
     public function delete(Book $book): void
     {
-        $this->bookRepository->deleteBook($book);
+        $this->bookRepository->delete($book);
     }
 
 }

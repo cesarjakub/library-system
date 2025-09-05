@@ -54,7 +54,7 @@ final class LoanRepositoryTest extends TestCase
         $this->em->shouldReceive('flush')
             ->once();
 
-        $this->loanRepository->saveLoan($realLoan);
+        $this->loanRepository->save($realLoan);
 
         Assert::type(Loan::class, $persistedLoan);
         Assert::same($user, $persistedLoan->getUser());
