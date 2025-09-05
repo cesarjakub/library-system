@@ -21,7 +21,7 @@ class UserRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function findById(int $id): object
+    public function findById(int $id): ?object
     {
         return $this->find($id);
     }

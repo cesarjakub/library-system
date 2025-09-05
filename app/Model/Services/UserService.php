@@ -23,7 +23,7 @@ class UserService
         return $this->userRepository->findAllUsers();
     }
 
-    public function getById(int $id): User
+    public function getById(int $id): ?object
     {
         return $this->userRepository->findById($id);
     }

@@ -22,7 +22,7 @@ class BookRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function findById(int $id): Book
+    public function findById(int $id): ?Book
     {
         return $this->find($id);
     }
