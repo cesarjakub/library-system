@@ -3,25 +3,20 @@ declare(strict_types=1);
 
 namespace App\Presentation\Loan;
 
-use App\Model\Entities\Book;
 use App\Model\Entities\Loan;
-use App\Model\Entities\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use App\Model\Services\BookService;
+use App\Model\Services\LoanService;
+use App\Model\Services\UserService;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 
 final class LoanPresenter extends Presenter
 {
-    private EntityRepository $loanRepo;
-    private EntityRepository $bookRepo;
-    private EntityRepository $userRepo;
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->loanRepo = $em->getRepository(Loan::class);
-        $this->bookRepo = $em->getRepository(Book::class);
-        $this->userRepo = $em->getRepository(User::class);
-    }
+    public function __construct(
+        private BookService $bookService,
+        private UserService $userService,
+        private LoanService $loanService
+    ){}
 
     public function startup(): void
     {
@@ -33,20 +28,20 @@ final class LoanPresenter extends Presenter
 
     public function renderDefault(): void
     {
-        $this->template->loans = $this->loanRepo->findAll();
+        $this->template->loans = $this->loanService->getAll();
     }
 
     protected function createComponentLoanForm(): Form
     {
         $form = new Form;
 
-        $users = $this->userRepo->findAll();
+        $users = $this->userService->getAll();
         $userOptions = [];
         foreach ($users as $user) {
             $userOptions[$user->getId()] = $user->getEmail();
         }
 
-        $books = $this->bookRepo->findAll();
+        $books = $this->bookService->getAll();
         $bookOptions = [];
         foreach ($books as $book) {
             $bookOptions[$book->getId()] = $book->getTitle();
@@ -68,12 +63,10 @@ final class LoanPresenter extends Presenter
 
     public function loanFormSucceeded(Form $form, \stdClass $values): void
     {
-        $user = $this->userRepo->find($values->user);
-        $book = $this->bookRepo->find($values->book);
+        $user = $this->userService->getById($values->user);
+        $book = $this->bookService->getById($values->book);
 
-        $loan = new Loan($user, $book);
-
-        $this->loanRepo->saveLoan($loan);
+        $this->loanService->create($user, $book);
 
         $this->flashMessage('Loan created.', 'success');
         $this->redirect('Loan:default');
@@ -81,12 +74,12 @@ final class LoanPresenter extends Presenter
 
     public function handleReturn(int $id): void
     {
-        $loan = $this->loanRepo->find($id);
+        $loan = $this->loanService->getById($id);
         if (!$loan) {
             $this->error('Loan not found.');
         }
 
-        $this->loanRepo->markReturned($loan);
+        $this->loanService->markReturned($loan);
 
         $this->flashMessage('Book marked as returned.', 'success');
         $this->redirect('this');

@@ -21,7 +21,7 @@ class UserRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function findById(int $id): ?object
+    public function findById(int $id): ?User
     {
         return $this->find($id);
     }
@@ -31,7 +31,7 @@ class UserRepository extends EntityRepository
         return $this->findAll();
     }
 
-    public function findByEmail(string $email): ?object
+    public function findByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);
     }

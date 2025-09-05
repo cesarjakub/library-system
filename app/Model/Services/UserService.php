@@ -23,12 +23,12 @@ class UserService
         return $this->userRepository->findAllUsers();
     }
 
-    public function getById(int $id): ?object
+    public function getById(int $id): ?User
     {
         return $this->userRepository->findById($id);
     }
 
-    public function getUserByEmail(string $email): ?object
+    public function getUserByEmail(string $email): ?User
     {
         return $this->userRepository->findByEmail($email);
     }

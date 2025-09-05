@@ -14,18 +14,18 @@ class LoanRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function removeLoan(Loan $loan): void
+    public function deleteLoan(Loan $loan): void
     {
         $this->_em->remove($loan);
         $this->_em->flush();
     }
 
-    public function findById(int $id): object
+    public function findById(int $id): ?Loan
     {
         return $this->find($id);
     }
 
-    public function findAll(): array
+    public function findAllLoans(): array
     {
         return parent::findAll();
     }
