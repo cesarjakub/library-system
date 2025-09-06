@@ -15,7 +15,8 @@ final class BookFormTest extends TestCase
     {
         $presenter = new class extends BookPresenter {
             public function __construct() {}
-            protected function startup() {}
+            protected function startup(): void
+            {}
         };
 
         $form = $presenter->getComponent('bookForm');

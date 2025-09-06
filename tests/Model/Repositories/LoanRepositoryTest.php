@@ -6,8 +6,7 @@ namespace Model\Repositories;
 use App\Model\Entities\Book;
 use App\Model\Entities\Loan;
 use App\Model\Entities\User;
-use App\Model\Repositories\LoanRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\LoanService;
 use Mockery;
 use Tester\Assert;
 use Tester\TestCase;
@@ -16,18 +15,11 @@ require __DIR__ . '/../../bootstrap.php';
 
 final class LoanRepositoryTest extends TestCase
 {
-    private LoanRepository $loanRepository;
-    private EntityManagerInterface $em;
+    private LoanService $loanServiceMock;
 
     protected function setUp(): void
     {
-        $this->em = Mockery::mock(EntityManagerInterface::class);
-        
-        $this->loanRepository = new class($this->em) extends LoanRepository {
-            public function __construct($em) {
-                $this->_em = $em;
-            }
-        };
+        $this->loanServiceMock = Mockery::mock(LoanService::class);
     }
 
     protected function tearDown(): void
@@ -39,26 +31,19 @@ final class LoanRepositoryTest extends TestCase
     {
         $user = Mockery::mock(User::class);
         $book = Mockery::mock(Book::class);
+        $loan = new Loan($user, $book);
 
-        $realLoan = new Loan($user, $book);
-
-        $persistedLoan = null;
-
-        $this->em->shouldReceive('persist')
+        $this->loanServiceMock
+            ->shouldReceive('create')
+            ->with($user, $book)
             ->once()
-            ->with(Mockery::on(function ($loan) use (&$persistedLoan) {
-                $persistedLoan = $loan;
-                return $loan instanceof Loan;
-            }));
+            ->andReturn($loan);
 
-        $this->em->shouldReceive('flush')
-            ->once();
+        $result = $this->loanServiceMock->create($user, $book);
 
-        $this->loanRepository->save($realLoan);
-
-        Assert::type(Loan::class, $persistedLoan);
-        Assert::same($user, $persistedLoan->getUser());
-        Assert::same($book, $persistedLoan->getBook());
+        Assert::same($loan, $result);
+        Assert::same($user, $result->getUser());
+        Assert::same($book, $result->getBook());
     }
 }
 (new LoanRepositoryTest())->run();

@@ -1,12 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Model\Security;
+namespace Core\Security;
 
 use App\Core\Security\UserAuthenticator;
 use App\Model\Entities\User;
-use App\Model\Repositories\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\UserService;
 use Mockery;
 use Nette\Security\AuthenticationException;
 use Nette\Security\SimpleIdentity;
@@ -18,18 +17,13 @@ require __DIR__ . '/../../bootstrap.php';
 final class UserAuthenticatorTest extends TestCase
 {
     private UserAuthenticator $authenticator;
-    private UserRepository $userRepository;
+    private UserService $userServiceMock;
 
     protected function setUp(): void
     {
-        $em = Mockery::mock(EntityManagerInterface::class);
-        $this->userRepository = Mockery::mock(UserRepository::class);
+        $this->userServiceMock = Mockery::mock(UserService::class);
 
-        $em->shouldReceive('getRepository')
-            ->with(User::class)
-            ->andReturn($this->userRepository);
-
-        $this->authenticator = new UserAuthenticator($em);
+        $this->authenticator = new UserAuthenticator($this->userServiceMock);
     }
 
     protected function tearDown(): void
@@ -45,7 +39,8 @@ final class UserAuthenticatorTest extends TestCase
         $user->shouldReceive('getRole')->andReturn('admin');
         $user->shouldReceive('getEmail')->andReturn('john@example.com');
 
-        $this->userRepository->shouldReceive('findByEmail')
+        $this->userServiceMock
+            ->shouldReceive('getUserByEmail')
             ->with('john@example.com')
             ->andReturn($user);
 
@@ -60,14 +55,28 @@ final class UserAuthenticatorTest extends TestCase
     public function testAuthenticateWithInvalidCredentials(): void
     {
         $user = Mockery::mock(User::class);
-        $user->shouldReceive('verifyPassword')->with('pass')->andReturn(false);
+        $user->shouldReceive('verifyPassword')->with('wrongpass')->andReturn(false);
 
-        $this->userRepository->shouldReceive('findByEmail')
+        $this->userServiceMock
+            ->shouldReceive('getUserByEmail')
             ->with('john@example.com')
             ->andReturn($user);
 
         Assert::exception(
-            fn() => $this->authenticator->authenticate('john@example.com', 'pass'),
+            fn() => $this->authenticator->authenticate('john@example.com', 'wrongpass'),
+            AuthenticationException::class
+        );
+    }
+
+    public function testAuthenticateWithNonexistentUser(): void
+    {
+        $this->userServiceMock
+            ->shouldReceive('getUserByEmail')
+            ->with('unknown@example.com')
+            ->andReturn(null);
+
+        Assert::exception(
+            fn() => $this->authenticator->authenticate('unknown@example.com', 'pass'),
             AuthenticationException::class
         );
     }
