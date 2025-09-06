@@ -2,7 +2,7 @@
 
 namespace App\Command;
 use App\Model\Entities\Loan;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\LoanService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListLoansCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private LoanService $loanService
     )
     {
         parent::__construct();
@@ -28,7 +28,7 @@ class ListLoansCommand extends Command
     {
         $userId = $input->getOption('user');
 
-        $loans = $this->em->getRepository(Loan::class)->findBy(['returnedAt' => null]);
+        $loans = $this->loanService->getActiveLoans();
 
         if ($userId) {
             $loans = array_filter($loans, fn($loan) => $loan->getUser()->getId() == $userId);

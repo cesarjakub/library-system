@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Model\Entities\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\UserService;
 use Faker\Factory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SeedUsersCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private UserService $userService
     )
     {
         parent::__construct();
@@ -42,9 +42,7 @@ class SeedUsersCommand extends Command
             $email = $faker->unique()->safeEmail();
             $plainPassword = $faker->password(8, 16);
 
-            $user = new User($email, $plainPassword);
-
-            $this->em->persist($user);
+            $this->userService->create($email, $plainPassword);
             $created++;
 
             $output->writeln(
@@ -55,8 +53,6 @@ class SeedUsersCommand extends Command
                 )
             );
         }
-
-        $this->em->flush();
 
         $output->writeln(sprintf('Done! %s users were created.', $created));
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Model\Entities\Book;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\Services\BookService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ImportBooksCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private BookService $bookService
     ) {
         parent::__construct();
     }
@@ -42,11 +42,9 @@ class ImportBooksCommand extends Command
                 $output->writeln(sprintf('Skipped invalid line: %s', $line));
                 continue;
             }
-            $book = new Book($title, $author, (int)$year, $isbn);
-            $this->em->persist($book);
+            $this->bookService->create($title, $author, (int)$year, $isbn);
             $count++;
         }
-        $this->em->flush();
         $output->writeln(sprintf('Import completed: %s books were added.', $count));
         return Command::SUCCESS;
     }
