@@ -5,7 +5,6 @@ namespace Model\Repositories;
 
 use App\Model\Entities\Book;
 use App\Model\Repositories\BookRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Mockery;
 use Tester\Assert;
 use Tester\TestCase;

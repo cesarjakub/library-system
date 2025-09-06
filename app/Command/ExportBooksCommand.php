@@ -71,7 +71,7 @@ class ExportBooksCommand extends Command
     private function exportCsv(array $books, mixed $outputFile, OutputInterface $output): int
     {
         $handle = fopen($outputFile, 'w');
-        fputcsv($handle, ['title', 'author', 'year', 'isbn']);
+        fputcsv($handle, ['title', 'author', 'year', 'isbn'], ',', '"', '\\');
 
         foreach ($books as $book) {
             fputcsv($handle, [
@@ -79,7 +79,7 @@ class ExportBooksCommand extends Command
                 $book->getAuthor(),
                 $book->getYear(),
                 $book->getIsbn(),
-            ]);
+            ], ',', '"', '\\');
         }
 
         fclose($handle);
