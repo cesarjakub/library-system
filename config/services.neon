@@ -10,6 +10,7 @@ services:
 	- App\Command\ImportBooksCommand
 	- App\Command\ListLoansCommand
 	- App\Command\SeedUsersCommand
+	- App\Command\ExportBooksCommand
 
 search:
 	-	in: %appDir%

@@ -30,6 +30,11 @@ class LoanService
         return $this->loanRepository->findById($id);
     }
 
+    public function getActiveLoans(): array
+    {
+        return $this->loanRepository->findBy(['returnedAt' => null]);
+    }
+
     public function create(User $user, Book $book): Loan
     {
         $loan = new Loan($user, $book);
