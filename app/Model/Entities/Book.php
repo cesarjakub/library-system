@@ -27,6 +27,9 @@ class Book
     #[ORM\Column(type: 'string')]
     private string $isbn;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $coverPath = null;
+
     public function __construct(string $title, string $author, int $year, string $isbn)
     {
         $this->title = $title;
@@ -78,6 +81,17 @@ class Book
     public function setIsbn(string $isbn): void
     {
         $this->isbn = $isbn;
+    }
+
+
+    public function getCoverPath(): ?string
+    {
+        return $this->coverPath;
+    }
+
+    public function setCoverPath(?string $coverPath): void
+    {
+        $this->coverPath = $coverPath;
     }
 
 }

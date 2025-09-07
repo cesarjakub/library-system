@@ -6,6 +6,7 @@ namespace App\Presentation\Book;
 use App\Model\Services\BookService;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\Form;
+use Nette\Utils\Image;
 
 class BookPresenter extends Presenter
 {
@@ -92,6 +93,61 @@ class BookPresenter extends Presenter
 
         $this->flashMessage('Book has been deleted.', 'success');
         $this->redirect('Book:default');
+    }
+
+    protected function createComponentCoverForm(): Form
+    {
+        $form = new Form;
+
+        $form->addUpload('cover', 'Upload cover:')
+            ->setRequired(false)
+            ->addRule($form::Image, 'Cover must be JPEG, PNG or GIF.')
+            ->addRule($form::MaxFileSize, 'Maximum file size is 2 MB.', 1 * 1024 * 1024);
+
+        $form->addHidden('id', (string) $this->getParameter('id'));
+        $form->addSubmit('send', 'Upload');
+
+        $form->onSuccess[] = $this->coverFormSucceeded(...);
+
+        return $form;
+    }
+
+    public function coverFormSucceeded(Form $form, \stdClass $values): void
+    {
+        if (!$this->getUser()->isInRole('admin')) {
+            $this->error('You are not authorized to perform this action.', 403);
+        }
+
+        $book = $this->bookService->getById((int) $values->id);
+        if (!$book) {
+            $this->error('Book was not found.');
+        }
+
+        if ($values->cover->isOk()) {
+
+            $image = Image::fromFile($values->cover->getTemporaryFile());
+            $requiredWidth = 600;
+            $requiredHeight = 800;
+
+            if ($image->width !== $requiredWidth || $image->height !== $requiredHeight) {
+                $form->addError("Cover must be exactly {$requiredWidth}x{$requiredHeight} pixels.");
+                return;
+            }
+
+            $fileName = uniqid('book_', true) . '.' . $values->cover->getImageFileExtension();
+            $uploadDir = __DIR__ . '/../../../www/uploads/books/';
+            $filePath = $uploadDir . $fileName;
+
+            $values->cover->move($filePath);
+
+            $this->bookService->addBookCover($book, $fileName);
+
+            $this->flashMessage('Cover was uploaded.', 'success');
+        } else {
+            $this->flashMessage('Upload failed.', 'danger');
+        }
+
+        $this->redirect('this');
     }
 
     public function actionAdd(): void

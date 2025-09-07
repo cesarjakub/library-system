@@ -28,6 +28,12 @@ class BookService
         return $this->bookRepository->findById($id);
     }
 
+    public function addBookCover(Book $book, string $path): void
+    {
+        $book->setCoverPath($path);
+        $this->bookRepository->save($book);
+    }
+
     public function create(string $title, string $author, int $year, string $isbn): Book
     {
         $book = new Book($title, $author, $year, $isbn);

@@ -1,22 +1,54 @@
 {block content}
-<div class="mb-3">
-    <h1 class="mb-3">{$book->getTitle()}</h1>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 text-center mb-3">
+            <img src="{$book->getCoverPath() ? $basePath . '/uploads/books/' . $book->getCoverPath() : $basePath . '/uploads/books/placeholder.png'}"
+                 alt="{$book->getTitle()}"
+                 class="img-fluid rounded shadow-sm mb-3"
+                 style="max-height: 300px;">
 
-    <div class="mb-3">
-        <p><strong>Author:</strong> {$book->getAuthor()}</p>
-        <p><strong>Year:</strong> {$book->getYear()}</p>
-        <p><strong>ISBN:</strong> {$book->getIsbn()}</p>
+            {if $user->isInRole('admin') && !$book->getCoverPath()}
+                <h5>Upload Cover</h5>
+
+                <form n:name=coverForm>
+                    <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
+                        <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+                    </ul>
+
+                    <div class="mb-3">
+                    {input cover, class: "form-control"}
+                        <div class="alert alert-danger mt-1" role="alert" n:ifcontent>
+                            {inputError cover}
+                        </div>
+                    </div>
+
+                    {input id}
+
+                    <div class="d-grid">
+                        {input send, class: "btn btn-primary"}
+                    </div>
+                </form>
+            {/if}
+        </div>
+
+        <div class="col-md-8">
+            <h1 class="mb-3">{$book->getTitle()}</h1>
+            <p><strong>Author:</strong> {$book->getAuthor()}</p>
+            <p><strong>Year:</strong> {$book->getYear()}</p>
+            <p><strong>ISBN:</strong> {$book->getIsbn()}</p>
+
+            {if $user->isInRole('admin')}
+                <div class="mt-4">
+                    {form deleteForm}
+                        {input id}
+                        {input send class => "btn btn-danger"}
+                    {/form}
+                </div>
+            {/if}
+
+            <p class="mt-3">
+                <a n:href="Book:default" class="btn btn-outline-secondary btn-sm">← GO Back</a>
+            </p>
+        </div>
     </div>
-
-    {if $user->isInRole('admin')}
-        {form deleteForm}
-            <div class="mt-3">
-                {input send, class: "btn btn-danger"}
-            </div>
-        {/form}
-    {/if}
 </div>
-
-<p>
-    <a n:href="Book:default" class="btn btn-outline-secondary btn-sm mb-2">← GO Back</a>
-</p>
