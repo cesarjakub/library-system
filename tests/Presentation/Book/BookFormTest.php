@@ -32,5 +32,4 @@ final class BookFormTest extends TestCase
         Assert::true($form['title']->hasErrors());
     }
 }
-
 (new BookFormTest())->run();

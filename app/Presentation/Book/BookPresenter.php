@@ -114,10 +114,6 @@ class BookPresenter extends Presenter
 
     public function coverFormSucceeded(Form $form, \stdClass $values): void
     {
-        if (!$this->getUser()->isInRole('admin')) {
-            $this->error('You are not authorized to perform this action.', 403);
-        }
-
         $book = $this->bookService->getById((int) $values->id);
         if (!$book) {
             $this->error('Book was not found.');
