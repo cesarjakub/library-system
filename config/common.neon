@@ -3,8 +3,6 @@
 includes:
     - database.neon
     - console.neon
-    - api.neon
-    #- middleware.neon
 
 parameters:
 
