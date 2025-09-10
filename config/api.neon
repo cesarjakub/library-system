@@ -1,0 +1,2 @@
+extensions:
+    api: Contributte\Api\DI\ApiExtension

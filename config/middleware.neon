@@ -1,0 +1,9 @@
+extensions:
+    middlewares: Contributte\Middlewares\DI\MiddlewaresExtension
+
+services:
+    - App\Middleware\ApiAuthMiddleware
+
+middlewares:
+    middlewares:
+        - App\Middleware\ApiAuthMiddleware
