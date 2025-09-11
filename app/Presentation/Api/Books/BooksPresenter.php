@@ -6,12 +6,10 @@ use App\Core\Middleware\ApiKeyMiddleware;
 use App\Model\Services\BookService;
 use App\Presentation\Api\ApiPresenter;
 use Nette\Application\Responses\JsonResponse;
-use Nette\Http\IResponse;
 
 class BooksPresenter extends ApiPresenter
 {
-    public function __construct
-    (
+    public function __construct(
         private BookService $bookService
     ){}
 
@@ -23,8 +21,6 @@ class BooksPresenter extends ApiPresenter
 
     public function actionList(): void
     {
-        $books = $this->bookService->getAll();
-
         $books = array_map(fn($book) => [
             'id' => $book->getId(),
             'title' => $book->getTitle(),
@@ -39,7 +35,8 @@ class BooksPresenter extends ApiPresenter
     {
         $book = $this->bookService->getById($id);
 
-        if (!$book) {
+        if (!$book)
+        {
             $this->getHttpResponse()->setCode(404);
             $this->sendResponse(new JsonResponse(['error' => 'Not found']));
         }
