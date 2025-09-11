@@ -1,16 +1,16 @@
 services:
-	- App\Core\RouterFactory::createRouter
-	userAuthenticator:
-	    factory: App\Core\Security\UserAuthenticator
-	    autowired: true
-	security.user:
-	    factory: Nette\Security\User
-	    setup:
-	        - setAuthenticator(@userAuthenticator)
-	- App\Command\ImportBooksCommand
-	- App\Command\ListLoansCommand
-	- App\Command\SeedUsersCommand
-	- App\Command\ExportBooksCommand
+    factory: App\Core\RouterFactory::createRouter
+    userAuthenticator:
+        factory: App\Core\Security\UserAuthenticator
+        autowired: true
+    security.user:
+        factory: Nette\Security\User
+        setup:
+            - setAuthenticator(@userAuthenticator)
+    - App\Command\ImportBooksCommand
+    - App\Command\ListLoansCommand
+    - App\Command\SeedUsersCommand
+    - App\Command\ExportBooksCommand
 
 search:
 	-	in: %appDir%
@@ -19,3 +19,13 @@ search:
 			- *Factory
 			#- *Repository
 			- *Service
+
+#	webRouter:
+#	apiRouter:
+#	    factory: Contributte\Api\Router\ApiRouter(@webRouter)
+#	    setup:
+#	        - add('GET', '/api/v1/books', @App\ApiModule\V1\BookListHandler)
+#	bookListHandler:
+#	    class: App\ApiModule\V1\BookListHandler
+#	authMiddleware:
+#	    class: App\ApiModule\Middleware\AuthMiddleware
