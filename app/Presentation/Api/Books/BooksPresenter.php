@@ -15,7 +15,8 @@ class BooksPresenter extends ApiPresenter
 
     protected function startup(): void
     {
-        $this->addMiddleware(new ApiKeyMiddleware($this, 'tajny-apikey-123'));
+        $apiKey = getenv('API_KEY_BOOKS');
+        $this->addMiddleware(new ApiKeyMiddleware($this, $apiKey));
         parent::startup();
     }
 
