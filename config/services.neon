@@ -19,13 +19,3 @@ search:
 			- *Factory
 			#- *Repository
 			- *Service
-
-#	webRouter:
-#	apiRouter:
-#	    factory: Contributte\Api\Router\ApiRouter(@webRouter)
-#	    setup:
-#	        - add('GET', '/api/v1/books', @App\ApiModule\V1\BookListHandler)
-#	bookListHandler:
-#	    class: App\ApiModule\V1\BookListHandler
-#	authMiddleware:
-#	    class: App\ApiModule\Middleware\AuthMiddleware
