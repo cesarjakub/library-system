@@ -136,7 +136,7 @@ class BookPresenter extends Presenter
 
             $values->cover->move($filePath);
 
-            $this->bookService->addBookCover($book, $fileName);
+            $this->bookService->update($book, ['coverPath' => $fileName]);
 
             $this->flashMessage('Cover was uploaded.', 'success');
         } else {

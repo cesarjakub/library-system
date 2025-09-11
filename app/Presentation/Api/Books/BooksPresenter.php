@@ -124,6 +124,29 @@ class BooksPresenter extends ApiPresenter
 
     public function actionUpdate(int $id): void
     {
+        $book = $this->bookService->getById($id);
+        if (!$book) {
+            $this->getHttpResponse()->setCode(404);
+            $this->sendResponse(new JsonResponse(['error' => 'Not found']));
+        }
+
+        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
+        if (!is_array($data)) {
+            $this->getHttpResponse()->setCode(400);
+            $this->sendResponse(new JsonResponse(['error' => 'Invalid input']));
+        }
+
+        $this->bookService->update($book, $data);
+
+        $this->getHttpResponse()->setCode(200);
+        $this->sendResponse(new JsonResponse([
+            'id'     => $book->getId(),
+            'title'  => $book->getTitle(),
+            'author' => $book->getAuthor(),
+            'year'   => $book->getYear(),
+            'isbn'   => $book->getIsbn(),
+            'coverPath' => $book->getCoverPath()
+        ]));
     }
 
 }

@@ -28,17 +28,32 @@ class BookService
         return $this->bookRepository->findById($id);
     }
 
-    public function addBookCover(Book $book, string $path): void
-    {
-        $book->setCoverPath($path);
-        $this->bookRepository->save($book);
-    }
-
     public function create(string $title, string $author, int $year, string $isbn): Book
     {
         $book = new Book($title, $author, $year, $isbn);
         $this->bookRepository->save($book);
         return $book;
+    }
+
+    public function update(Book $book, array $data): void
+    {
+        if (isset($data['title'])) {
+            $book->setTitle($data['title']);
+        }
+        if (isset($data['author'])) {
+            $book->setAuthor($data['author']);
+        }
+        if (isset($data['year'])) {
+            $book->setYear((int)$data['year']);
+        }
+        if (isset($data['isbn'])) {
+            $book->setIsbn($data['isbn']);
+        }
+        if (isset($data['coverPath'])) {
+            $book->setCoverPath($data['coverPath']);
+        }
+
+        $this->bookRepository->save($book);
     }
 
     public function delete(Book $book): void
