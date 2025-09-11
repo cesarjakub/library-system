@@ -19,6 +19,36 @@ class BooksPresenter extends ApiPresenter
         parent::startup();
     }
 
+    public function actionDefault(): void
+    {
+        $method = $this->getHttpRequest()->getMethod();
+
+        if ($method === 'GET') {
+            $this->actionList();
+        } elseif ($method === 'POST') {
+            $this->actionCreate();
+        } else {
+            $this->getHttpResponse()->setCode(405);
+            $this->sendResponse(new JsonResponse(['error' => 'Method not allowed']));
+        }
+    }
+
+    public function actionDetailMaster(int $id): void
+    {
+        $method = $this->getHttpRequest()->getMethod();
+
+        if ($method === 'GET') {
+            $this->actionDetail($id);
+        } elseif ($method === 'PUT') {
+            $this->actionUpdate($id);
+        } elseif ($method === 'DELETE') {
+            $this->actionDelete($id);
+        } else {
+            $this->getHttpResponse()->setCode(405);
+            $this->sendResponse(new JsonResponse(['error' => 'Method not allowed']));
+        }
+    }
+
     public function actionList(): void
     {
         $books = array_map(fn($book) => [
@@ -90,6 +120,10 @@ class BooksPresenter extends ApiPresenter
         $this->bookService->delete($book);
 
         $this->getHttpResponse()->setCode(204);
+    }
+
+    public function actionUpdate(int $id): void
+    {
     }
 
 }

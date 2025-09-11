@@ -18,11 +18,12 @@ final class RouterFactory
 
 
         // API v1 routes
-        $router->addRoute('api/v1/books', 'Api:Books:list');
-        $router->addRoute('api/v1/books/<id>', 'Api:Books:detail');
-        $router->addRoute('api/v1/loans', 'Api:Loans:list');
-        $router->addRoute('api/v1/loans/<id>', 'Api:Loans:detail');
-        $router->addRoute('api/v1/loans/<id>/return', 'Api:Loans:return');
+        $router->addRoute('api/v1/books', 'Api:Books:default');
+        $router->addRoute('api/v1/books/<id>', 'Api:Books:detailMaster');
+
+
+        $router->addRoute('api/v1/loans', 'Api:Loans:default');
+        $router->addRoute('api/v1/loans/<id>', 'Api:Loans:detailMaster');
 
         // Default catch-all pro klasické presentery
         $router->addRoute('<presenter>/<action>[/<id>]', 'Home:default');

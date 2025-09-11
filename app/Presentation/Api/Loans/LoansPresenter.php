@@ -24,6 +24,34 @@ class LoansPresenter extends ApiPresenter
         parent::startup();
     }
 
+    public function actionDefault(): void
+    {
+        $method = $this->getHttpRequest()->getMethod();
+
+        if ($method === 'GET') {
+            $this->actionList();
+        } elseif ($method === 'POST') {
+            $this->actionCreate();
+        } else {
+            $this->getHttpResponse()->setCode(405);
+            $this->sendResponse(new JsonResponse(['error' => 'Method not allowed']));
+        }
+    }
+
+    public function actionDetailMaster(int $id): void
+    {
+        $method = $this->getHttpRequest()->getMethod();
+
+        if ($method === 'GET') {
+            $this->actionDetail($id);
+        } elseif ($method === 'PUT') {
+            $this->actionReturn($id);
+        } else {
+            $this->getHttpResponse()->setCode(405);
+            $this->sendResponse(new JsonResponse(['error' => 'Method not allowed']));
+        }
+    }
+
     public function actionList(): void
     {
         $loans = array_map(fn($loan) => [
@@ -115,18 +143,5 @@ class LoansPresenter extends ApiPresenter
 
         $this->getHttpResponse()->setCode(201);
         $this->sendResponse(new JsonResponse($loanDetail));
-    }
-
-    public function actionDelete(int $id): void
-    {
-        $loan = $this->loanService->getById($id);
-        if (!$loan) {
-            $this->getHttpResponse()->setCode(404);
-            $this->sendResponse(new JsonResponse(['error' => 'Not found']));
-        }
-
-        $this->loanService->delete($loan);
-
-        $this->getHttpResponse()->setCode(204);
     }
 }
