@@ -52,4 +52,44 @@ class BooksPresenter extends ApiPresenter
 
         $this->sendResponse(new JsonResponse($bookDetail));
     }
+
+    public function actionCreate(): void
+    {
+        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
+
+        if (!isset($data['title'], $data['author'], $data['year'], $data['isbn'])) {
+            $this->getHttpResponse()->setCode(400);
+            $this->sendResponse(new JsonResponse(['error' => 'Invalid input']));
+        }
+
+        $book = $this->bookService->create(
+            $data['title'],
+            $data['author'],
+            (int)$data['year'],
+            $data['isbn'],
+        );
+
+        $this->getHttpResponse()->setCode(201);
+        $this->sendResponse(new JsonResponse([
+            'id' => $book->getId(),
+            'title' => $book->getTitle(),
+            'author' => $book->getAuthor(),
+            'year' => $book->getYear(),
+            'isbn' => $book->getIsbn()
+        ]));
+    }
+
+    public function actionDelete(int $id): void
+    {
+        $book = $this->bookService->getById($id);
+        if (!$book) {
+            $this->getHttpResponse()->setCode(404);
+            $this->sendResponse(new JsonResponse(['error' => 'Not found']));
+        }
+
+        $this->bookService->delete($book);
+
+        $this->getHttpResponse()->setCode(204);
+    }
+
 }
