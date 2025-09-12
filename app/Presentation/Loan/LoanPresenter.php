@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Presentation\Loan;
 
 use App\Model\Services\BookService;
+use App\Model\Services\EmailNotificationService;
 use App\Model\Services\LoanService;
 use App\Model\Services\UserService;
 use Nette\Application\UI\Form;
@@ -14,7 +15,8 @@ final class LoanPresenter extends Presenter
     public function __construct(
         private BookService $bookService,
         private UserService $userService,
-        private LoanService $loanService
+        private LoanService $loanService,
+        private EmailNotificationService $emailNotificationService,
     ){}
 
     public function startup(): void
@@ -66,6 +68,7 @@ final class LoanPresenter extends Presenter
         $book = $this->bookService->getById($values->book);
 
         $this->loanService->create($user, $book);
+        $this->emailNotificationService->sendLoanNotification($user, $book);
 
         $this->flashMessage('Loan created.', 'success');
         $this->redirect('Loan:default');

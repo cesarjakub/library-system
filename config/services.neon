@@ -9,6 +9,10 @@ services:
             - setAuthenticator(@userAuthenticator)
     nette.mailer:
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
+    EmailNotificationService:
+            factory: App\Model\Services\EmailNotificationService
+            arguments:
+                - @nette.mailer
     - App\Command\ImportBooksCommand
     - App\Command\ListLoansCommand
     - App\Command\SeedUsersCommand

@@ -2,9 +2,8 @@
 
 namespace App\Command;
 
+use App\Model\Services\EmailNotificationService;
 use App\Model\Services\LoanService;
-use Nette\Mail\Mailer;
-use Nette\Mail\Message;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +14,7 @@ class NotifyOverdueCommand extends Command
 {
     public function __construct(
         private LoanService $loanService,
-        private Mailer $mailer
+        private EmailNotificationService $emailNotificationService
     ){
         parent::__construct();
     }
@@ -34,18 +33,8 @@ class NotifyOverdueCommand extends Command
             $user = $loan->getUser();
             $book = $loan->getBook();
 
-            $message = new Message();
-            $message->setFrom('jirka@gmail.com');
-            $message->addTo($user->getEmail());
-            $message->setSubject('Notification: Overdue Book');
-            $message->setBody(
-                    "Hello {$user->getEmail()},\n\n".
-                    "The book '{$book->getTitle()}' has been borrowed for more than 30 days.\n".
-                    "Please return it as soon as possible.\n\n".
-                    "Your Library"
-                );
+            $this->emailNotificationService->sendOverdueNotification($user, $book);
 
-            $this->mailer->send($message);
 
             $output->writeln(
                 "Notification sent: {$user->getEmail()} – '{$book->getTitle()}'"
