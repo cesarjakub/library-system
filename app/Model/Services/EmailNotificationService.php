@@ -16,7 +16,7 @@ class EmailNotificationService
     public function sendLoanNotification(User $user, Book $book): void
     {
         $message = new Message();
-        $message->setFrom('jirka@gmail.com')
+        $message->setFrom('library@example.com')
             ->addTo($user->getEmail())
             ->setSubject('Book Loan Confirmation')
             ->setBody(
