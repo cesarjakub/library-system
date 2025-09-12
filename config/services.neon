@@ -7,10 +7,14 @@ services:
         factory: Nette\Security\User
         setup:
             - setAuthenticator(@userAuthenticator)
+    nette.mailer:
+        factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
     - App\Command\ImportBooksCommand
     - App\Command\ListLoansCommand
     - App\Command\SeedUsersCommand
     - App\Command\ExportBooksCommand
+    - App\Command\NotifyOverdueCommand
+
 
 search:
 	-	in: %appDir%

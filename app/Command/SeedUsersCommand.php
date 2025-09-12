@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Model\Entities\User;
 use App\Model\Services\UserService;
 use Faker\Factory;
 use Symfony\Component\Console\Attribute\AsCommand;

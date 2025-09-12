@@ -52,4 +52,16 @@ class LoanService
         $loan->setReturnedAt(new \DateTimeImmutable());
         $this->loanRepository->save($loan);
     }
+
+    public function findOverdueLoans(int $days): array
+    {
+        $thresholdDate = new \DateTimeImmutable("-{$days} days");
+
+        return $this->loanRepository->createQueryBuilder('l')
+            ->where('l.returnedAt IS NULL')
+            ->andWhere('l.loanedAt < :threshold')
+            ->setParameter('threshold', $thresholdDate)
+            ->getQuery()
+            ->getResult();
+    }
 }

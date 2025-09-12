@@ -6,6 +6,9 @@ includes:
 
 parameters:
 
+tracy:
+	bar:
+		- Nextras\MailPanel\MailPanel(%tempDir%/mail-panel-latte)
 
 application:
 	errorPresenter:
