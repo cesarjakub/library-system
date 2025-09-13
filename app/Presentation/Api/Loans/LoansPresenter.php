@@ -3,7 +3,6 @@
 namespace App\Presentation\Api\Loans;
 
 use App\Core\Middleware\ApiKeyMiddleware;
-use App\Model\Repositories\LoanRepository;
 use App\Model\Services\BookService;
 use App\Model\Services\LoanService;
 use App\Model\Services\UserService;
