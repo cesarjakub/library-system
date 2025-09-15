@@ -3,8 +3,6 @@ extensions:
 
 elasticsearch:
     hosts:
-        - host: localhost
+        - host: 127.0.0.1
           port: 9200
-          scheme: https
-          user: elastic
-          pass: "*doSvdbYqFMVFjn9Dj1g"
+          scheme: http
