@@ -3,6 +3,7 @@
 includes:
     - database.neon
     - console.neon
+    - elasticsearch.neon
 
 parameters:
 

@@ -23,9 +23,20 @@ class BookService
         return $this->bookRepository->findAllBooks();
     }
 
+    public function getPage(int $offset, int $limit): array
+    {
+        return $this->bookRepository->findBy([], null, $limit, $offset);
+    }
+
     public function getById(int $id): ?Book
     {
         return $this->bookRepository->findById($id);
+    }
+
+    public function getByIds(array $ids): array
+    {
+        if (!$ids) return [];
+        return $this->bookRepository->findBy(['id' => $ids]);
     }
 
     public function create(string $title, string $author, int $year, string $isbn): Book
@@ -54,6 +65,11 @@ class BookService
         }
 
         $this->bookRepository->save($book);
+    }
+
+    public function getCount(): int
+    {
+        return $this->bookRepository->count([]);
     }
 
     public function delete(Book $book): void

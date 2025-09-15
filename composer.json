@@ -24,7 +24,8 @@
 		"nettrine/dbal": "^0.8.2",
 		"nettrine/orm": "^0.8.4",
 		"contributte/console": "^0.10.1",
-		"fakerphp/faker": "^1.24"
+		"fakerphp/faker": "^1.24",
+		"contributte/elasticsearch": "^0.4.2"
 	},
 	"require-dev": {
 		"nette/tester": "^2.5",
@@ -45,7 +46,8 @@
 	"minimum-stability": "stable",
 	"config": {
 		"allow-plugins": {
-			"symfony/thanks": true
+			"symfony/thanks": true,
+			"php-http/discovery": true
 		}
 	}
 }

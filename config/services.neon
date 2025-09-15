@@ -13,11 +13,13 @@ services:
             factory: App\Model\Services\EmailNotificationService
             arguments:
                 - @nette.mailer
+    - App\Model\Services\BookIndexer
     - App\Command\ImportBooksCommand
     - App\Command\ListLoansCommand
     - App\Command\SeedUsersCommand
     - App\Command\ExportBooksCommand
     - App\Command\NotifyOverdueCommand
+    - App\Command\ReindexBooksCommand
 
 
 search:

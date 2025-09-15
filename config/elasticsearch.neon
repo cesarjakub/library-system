@@ -1,0 +1,10 @@
+extensions:
+    elasticsearch: Contributte\Elasticsearch\DI\ElasticsearchExtension
+
+elasticsearch:
+    hosts:
+        - host: localhost
+          port: 9200
+          scheme: https
+          user: elastic
+          pass: "*doSvdbYqFMVFjn9Dj1g"

@@ -67,6 +67,7 @@ class LoanService
     {
         return $this->loanRepository->count([]);
     }
+
     public function findOverdueLoans(int $days): array
     {
         $thresholdDate = new \DateTimeImmutable("-{$days} days");

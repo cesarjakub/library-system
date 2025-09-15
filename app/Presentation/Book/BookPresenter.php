@@ -3,15 +3,18 @@ declare(strict_types=1);
 
 namespace App\Presentation\Book;
 
+use App\Model\Services\BookIndexer;
 use App\Model\Services\BookService;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\Image;
+use Nette\Utils\Paginator;
 
 class BookPresenter extends Presenter
 {
     public function __construct(
-        private BookService $bookService
+        private BookService $bookService,
+        private BookIndexer $bookIndexer
     ){}
 
     protected function startup(): void
@@ -22,9 +25,32 @@ class BookPresenter extends Presenter
         }
     }
 
-    public function renderDefault(): void
+    public function renderDefault(?string $q = null, int $page = 1): void
     {
-        $this->template->books = $this->bookService->getAll();
+        $itemsPerPage = 10;
+        $this->template->query = $q;
+
+        $paginator = new Paginator;
+        $paginator->setItemsPerPage($itemsPerPage);
+        $paginator->setPage($page);
+
+        if ($q) {
+            $totalItems = $this->bookIndexer->countSearchResults($q);
+            $paginator->setItemCount($totalItems);
+
+            $from = $paginator->getOffset();
+            $ids = $this->bookIndexer->search($q, $from, $itemsPerPage);
+
+            $books = $this->bookService->getByIds($ids);
+        } else {
+            $totalItems = $this->bookService->getCount();
+            $paginator->setItemCount($totalItems);
+
+            $books = $this->bookService->getPage($paginator->getOffset(), $itemsPerPage);
+        }
+
+        $this->template->books = $books;
+        $this->template->paginator = $paginator;
     }
 
     public function renderDetail(int $id): void
@@ -62,8 +88,8 @@ class BookPresenter extends Presenter
             $this->error('You are not authorized to perform this action.', 403);
         }
 
-        $this->bookService->create($values->title, $values->author, $values->year, $values->isbn);
-
+        $book = $this->bookService->create($values->title, $values->author, $values->year, $values->isbn);
+        $this->bookIndexer->index($book);
         $this->flashMessage('Book has been added.', 'success');
         $this->redirect('Book:default');
     }
@@ -90,6 +116,7 @@ class BookPresenter extends Presenter
         }
 
         $this->bookService->delete($book);
+        $this->bookIndexer->delete($book->getId());
 
         $this->flashMessage('Book has been deleted.', 'success');
         $this->redirect('Book:default');
@@ -144,6 +171,24 @@ class BookPresenter extends Presenter
         }
 
         $this->redirect('this');
+    }
+
+    protected function createComponentSearchForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('q', 'Search')
+            ->setDefaultValue($this->getParameter('q') ?? '')
+            ->setHtmlAttribute('placeholder', 'Hledat…');
+
+        $form->addSubmit('send', 'Search')
+            ->setHtmlAttribute('class', 'btn btn-primary ms-2');
+
+        $form->onSuccess[] = function (Form $form, \stdClass $values): void {
+            $this->redirect('Book:default', ['q' => $values->q]);
+        };
+
+        return $form;
     }
 
     public function actionAdd(): void
