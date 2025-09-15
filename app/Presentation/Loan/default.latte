@@ -32,3 +32,20 @@
     {/foreach}
     </tbody>
 </table>
+<nav aria-label="Loan pagination">
+    <ul class="pagination justify-content-center">
+        <li n:class="$paginator->isFirst() ? 'page-item disabled' : 'page-item'">
+            <a class="page-link" n:href="this page => $paginator->page - 1">&laquo;</a>
+        </li>
+
+        {for $i = 1; $i <= $paginator->pageCount; $i++}
+            <li n:class="$paginator->page === $i ? 'page-item active' : 'page-item'">
+                <a class="page-link" n:href="this page => $i">{$i}</a>
+            </li>
+        {/for}
+
+        <li n:class="$paginator->isLast() ? 'page-item disabled' : 'page-item'">
+            <a class="page-link" n:href="this page => $paginator->page + 1">&raquo;</a>
+        </li>
+    </ul>
+</nav>

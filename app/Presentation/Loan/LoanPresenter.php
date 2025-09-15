@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Loan;
 
+use Nette\Utils\Paginator;
 use App\Model\Services\BookService;
 use App\Model\Services\EmailNotificationService;
 use App\Model\Services\LoanService;
@@ -27,9 +28,20 @@ final class LoanPresenter extends Presenter
         }
     }
 
-    public function renderDefault(): void
+    public function renderDefault(int $page = 1): void
     {
-        $this->template->loans = $this->loanService->getAll();
+        $itemsPerPage = 10;
+        $totalItems = $this->loanService->getCount();
+
+        $paginator = new Paginator;
+        $paginator->setItemCount($totalItems);
+        $paginator->setItemsPerPage($itemsPerPage);
+        $paginator->setPage($page);
+
+        $loans = $this->loanService->getPage($paginator->getOffset(), $paginator->getItemsPerPage());
+
+        $this->template->loans = $loans;
+        $this->template->paginator = $paginator;
     }
 
     protected function createComponentLoanForm(): Form

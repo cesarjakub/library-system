@@ -25,6 +25,16 @@ class LoanService
         return $this->loanRepository->findAllLoans();
     }
 
+    public function getPage(int $offset, int $limit): array
+    {
+        return $this->loanRepository->createQueryBuilder('l')
+            ->orderBy('l.loanedAt', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getById(int $id): ?Loan
     {
         return $this->loanRepository->findById($id);
@@ -53,6 +63,10 @@ class LoanService
         $this->loanRepository->save($loan);
     }
 
+    public function getCount(): int
+    {
+        return $this->loanRepository->count([]);
+    }
     public function findOverdueLoans(int $days): array
     {
         $thresholdDate = new \DateTimeImmutable("-{$days} days");

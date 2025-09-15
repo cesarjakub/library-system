@@ -27,6 +27,9 @@ class LoanRepository extends EntityRepository
 
     public function findAllLoans(): array
     {
-        return parent::findAll();
+        return $this->createQueryBuilder('l')
+            ->orderBy('l.loanedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }
