@@ -22,6 +22,7 @@
     {/foreach}
 </ul>
 
+{if $paginator->pageCount > 1}
 <nav aria-label="Loan pagination">
     <ul class="pagination justify-content-center mt-2">
         <li n:class="$paginator->isFirst() ? 'page-item disabled' : 'page-item'">
@@ -39,3 +40,4 @@
         </li>
     </ul>
 </nav>
+{/if}
