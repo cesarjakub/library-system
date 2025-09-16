@@ -70,6 +70,6 @@ class BookIndexer
             ],
         ]);
 
-        return $response['hits']['total']['value'] ?? 0;
+        return $response['count'] ?? 0;
     }
 }
