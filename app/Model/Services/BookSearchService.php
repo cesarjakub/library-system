@@ -33,43 +33,98 @@ class BookSearchService
         ]);
     }
 
-    public function search(string $query, int $from = 0, int $size = 10): array
+    public function searchWithFilters(array $params, int $from = 0, int $size = 10): array
     {
+        $must = [];
+
+        if (!empty($params['query'])) {
+            $must[] = [
+                'multi_match' => [
+                    'query' => $params['query'],
+                    'fields' => ['title^2', 'author', 'isbn'],
+                ],
+            ];
+        }
+
+        if (isset($params['author']) && $params['author'] !== '') {
+            $must[] = [
+                'match' => [
+                    'author' => $params['author'],
+                ],
+            ];
+        }
+
+        $range = [];
+        if (isset($params['year_from']) && $params['year_from'] !== null && $params['year_from'] !== '') {
+            $range['gte'] = (int)$params['year_from'];
+        }
+        if (isset($params['year_to']) && $params['year_to'] !== null && $params['year_to'] !== '') {
+            $range['lte'] = (int)$params['year_to'];
+        }
+        if (!empty($range)) {
+            $must[] = ['range' => ['year' => $range]];
+        }
+
+        $queryBody = empty($must)
+            ? ['match_all' => (object)[]]
+            : ['bool' => ['must' => $must]];
+
         $response = $this->client->search([
             'index' => 'books',
-            'from' => $from,
-            'size' => $size,
-            'body' => [
-                'query' => [
-                    'multi_match' => [
-                        'query' => $query,
-                        'fields' => ['title^2', 'author', 'isbn'],
-                    ],
-                ],
+            'from'  => $from,
+            'size'  => $size,
+            'body'  => [
+                'query' => $queryBody,
             ],
         ]);
 
-        return array_map(
-            fn(array $hit) => (int) $hit['_id'],
-            $response['hits']['hits']
-        );
+        return array_map(fn(array $hit) => (int)$hit['_id'], $response['hits']['hits']);
     }
 
-    public function countSearchResults(string $query): int
+    public function countSearchResultsWithFilters(array $params): int
     {
+        $must = [];
+
+        if (!empty($params['query'])) {
+            $must[] = [
+                'multi_match' => [
+                    'query' => $params['query'],
+                    'fields' => ['title^2', 'author', 'isbn'],
+                ],
+            ];
+        }
+
+        if (isset($params['author']) && $params['author'] !== '') {
+            $must[] = [
+                'match' => [
+                    'author' => $params['author'],
+                ],
+            ];
+        }
+
+        $range = [];
+        if (isset($params['year_from']) && $params['year_from'] !== null && $params['year_from'] !== '') {
+            $range['gte'] = (int)$params['year_from'];
+        }
+        if (isset($params['year_to']) && $params['year_to'] !== null && $params['year_to'] !== '') {
+            $range['lte'] = (int)$params['year_to'];
+        }
+        if (!empty($range)) {
+            $must[] = ['range' => ['year' => $range]];
+        }
+
+        $queryBody = empty($must)
+            ? ['match_all' => (object)[]]
+            : ['bool' => ['must' => $must]];
+
         $response = $this->client->search([
             'index' => 'books',
-            'size' => 0,
-            'body' => [
-                'query' => [
-                    'multi_match' => [
-                        'query' => $query,
-                        'fields' => ['title^2', 'author', 'isbn'],
-                    ],
-                ],
+            'size'  => 0,
+            'body'  => [
+                'query' => $queryBody,
             ],
         ]);
 
-        return $response['count'] ?? 0;
+        return $response['hits']['total']['value'] ?? 0;
     }
 }

@@ -8,36 +8,68 @@
     </div>
 {/if}
 
-<form n:name="searchForm" class="mb-3 d-flex">
-    {$form['q']->control}
-    {$form['send']->control}
-</form>
+<div class="row">
+    <div class="col-md-3">
+        <form n:name=filterForm class="form mb-3 p-3 border rounded">
+            <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
+                <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+            </ul>
 
-<ul class="list-group">
-    {foreach $books as $book}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span><strong>{$book->getTitle()}</strong></span>
-            <a n:href="Book:detail $book->getId()" class="btn btn-outline-primary btn-sm">Book detail</a>
-        </li>
-    {/foreach}
-</ul>
+            <div class="mb-3">
+                {label q}Search:{/label}
+                {input q, class: "form-control"}
+            </div>
 
-{if $paginator->pageCount > 1}
-<nav aria-label="Loan pagination">
-    <ul class="pagination justify-content-center mt-2">
-        <li n:class="$paginator->isFirst() ? 'page-item disabled' : 'page-item'">
-            <a class="page-link" n:href="this page => $paginator->page - 1">&laquo;</a>
-        </li>
+            <div class="mb-3">
+                {label author}Author:{/label}
+                {input author, class: "form-select"}
+            </div>
 
-        {for $i = 1; $i <= $paginator->pageCount; $i++}
-            <li n:class="$paginator->page === $i ? 'page-item active' : 'page-item'">
-                <a class="page-link" n:href="this page => $i">{$i}</a>
-            </li>
-        {/for}
+            <div class="mb-3">
+                {label year_from}Year from:{/label}
+                {input year_from, class: "form-control"}
+            </div>
 
-        <li n:class="$paginator->isLast() ? 'page-item disabled' : 'page-item'">
-            <a class="page-link" n:href="this page => $paginator->page + 1">&raquo;</a>
-        </li>
-    </ul>
-</nav>
-{/if}
+            <div class="mb-3">
+                {label year_to}Year to:{/label}
+                {input year_to, class: "form-control"}
+            </div>
+
+            <div>
+                {input send, class: "btn btn-primary"}
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-9">
+        <ul class="list-group mb-3">
+            {foreach $books as $book}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{$book->getTitle()}</strong><br>
+                        <small class="text-muted">{$book->getAuthor()} ({$book->getYear()})</small>
+                    </div>
+                    <a n:href="Book:detail $book->getId()" class="btn btn-outline-primary btn-sm">Detail</a>
+                </li>
+            {/foreach}
+        </ul>
+
+        {if $paginator->pageCount > 1}
+        <nav aria-label="Book pagination">
+            <ul class="pagination justify-content-center">
+                <li n:class="$paginator->isFirst() ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" n:href="this page => $paginator->page - 1">&laquo;</a>
+                </li>
+                {for $i = 1; $i <= $paginator->pageCount; $i++}
+                    <li n:class="$paginator->page === $i ? 'page-item active' : 'page-item'">
+                        <a class="page-link" n:href="this page => $i">{$i}</a>
+                    </li>
+                {/for}
+                <li n:class="$paginator->isLast() ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" n:href="this page => $paginator->page + 1">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+        {/if}
+    </div>
+</div>

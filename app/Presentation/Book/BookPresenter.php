@@ -25,29 +25,27 @@ class BookPresenter extends Presenter
         }
     }
 
-    public function renderDefault(?string $q = null, int $page = 1): void
+    public function renderDefault(?string $q = null, ?string $author = null, ?int $year_from = null, ?int $year_to = null, int $page = 1): void
     {
         $itemsPerPage = 10;
-        $this->template->query = $q;
 
         $paginator = new Paginator;
         $paginator->setItemsPerPage($itemsPerPage);
         $paginator->setPage($page);
 
-        if ($q) {
-            $totalItems = $this->bookIndexer->countSearchResults($q);
-            $paginator->setItemCount($totalItems);
+        $searchParams = [
+            'query' => $q,
+            'author' => $author,
+            'year_from' => $year_from,
+            'year_to' => $year_to,
+        ];
 
-            $from = $paginator->getOffset();
-            $ids = $this->bookIndexer->search($q, $from, $itemsPerPage);
+        $totalItems = $this->bookIndexer->countSearchResultsWithFilters($searchParams);
+        $paginator->setItemCount($totalItems);
 
-            $books = $this->bookService->getByIds($ids);
-        } else {
-            $totalItems = $this->bookService->getCount();
-            $paginator->setItemCount($totalItems);
-
-            $books = $this->bookService->getPage($paginator->getOffset(), $itemsPerPage);
-        }
+        $from = $paginator->getOffset();
+        $ids = $this->bookIndexer->searchWithFilters($searchParams, $from, $itemsPerPage);
+        $books = $this->bookService->getByIds($ids);
 
         $this->template->books = $books;
         $this->template->paginator = $paginator;
@@ -169,22 +167,31 @@ class BookPresenter extends Presenter
         $this->redirect('this');
     }
 
-    protected function createComponentSearchForm(): Form
+    protected function createComponentFilterForm(): Form
     {
+        $authors = $this->bookService->getAllAuthors();
+
         $form = new Form;
+        $form->addText('q', 'Search');
+        $form->addSelect('author', 'Author:', $authors)
+            ->setPrompt('All authors');
+        $form->addInteger('year_from', 'Year from:');
+        $form->addInteger('year_to', 'Year to:');
+        $form->addSubmit('send', 'Filter');
 
-        $form->addText('q', 'Search')
-            ->setDefaultValue($this->getParameter('q') ?? '')
-            ->setHtmlAttribute('placeholder', 'Hledat…');
-
-        $form->addSubmit('send', 'Search')
-            ->setHtmlAttribute('class', 'btn btn-primary ms-2');
-
-        $form->onSuccess[] = function (Form $form, \stdClass $values): void {
-            $this->redirect('Book:default', ['q' => $values->q]);
-        };
+        $form->onSuccess[] = $this->filterFormSucceeded(...);
 
         return $form;
+    }
+
+    public function filterFormSucceeded(Form $form, \stdClass $values)
+    {
+        $this->redirect('Book:default', [
+            'q' => $values->q ?: null,
+            'author' => $values->author ?: null,
+            'year_from' => $values->year_from ?: null,
+            'year_to' => $values->year_to ?: null,
+        ]);
     }
 
     public function actionAdd(): void
