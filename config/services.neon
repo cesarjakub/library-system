@@ -13,7 +13,7 @@ services:
             factory: App\Model\Services\EmailNotificationService
             arguments:
                 - @nette.mailer
-    - App\Model\Services\BookIndexer
+    - App\Model\Services\BookSearchService
     - App\Command\ImportBooksCommand
     - App\Command\ListLoansCommand
     - App\Command\SeedUsersCommand

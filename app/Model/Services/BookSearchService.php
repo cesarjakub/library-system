@@ -5,7 +5,7 @@ namespace App\Model\Services;
 use App\Model\Entities\Book;
 use Elasticsearch\Client;
 
-class BookIndexer
+class BookSearchService
 {
     public function __construct(
         private Client $client,

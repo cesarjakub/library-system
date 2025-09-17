@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Model\Services\BookIndexer;
+use App\Model\Services\BookSearchService;
 use App\Model\Services\BookService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReindexBooksCommand extends Command
 {
     public function __construct(
-        private BookService $bookService,
-        private BookIndexer $bookIndexer,
+        private BookService       $bookService,
+        private BookSearchService $bookIndexer,
     ) {
         parent::__construct();
     }

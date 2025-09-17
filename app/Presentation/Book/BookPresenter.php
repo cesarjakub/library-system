@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Book;
 
-use App\Model\Services\BookIndexer;
+use App\Model\Services\BookSearchService;
 use App\Model\Services\BookService;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\Form;
@@ -14,7 +14,7 @@ class BookPresenter extends Presenter
 {
     public function __construct(
         private BookService $bookService,
-        private BookIndexer $bookIndexer
+        private BookSearchService $bookIndexer
     ){}
 
     protected function startup(): void
@@ -84,9 +84,7 @@ class BookPresenter extends Presenter
 
     private function bookFormSucceeded(Form $form, \stdClass $values): void
     {
-        if (!$this->getUser()->isInRole('admin')) {
-            $this->error('You are not authorized to perform this action.', 403);
-        }
+        $this->requireAdmin();
 
         $book = $this->bookService->create($values->title, $values->author, $values->year, $values->isbn);
         $this->bookIndexer->index($book);
@@ -106,9 +104,7 @@ class BookPresenter extends Presenter
 
     public function deleteFormSucceeded(Form $form, \stdClass $values): void
     {
-        if (!$this->getUser()->isInRole('admin')) {
-            $this->error('You are not authorized to perform this action.', 403);
-        }
+        $this->requireAdmin();
 
         $book = $this->bookService->getById((int) $values->id);
         if (!$book) {
@@ -193,8 +189,13 @@ class BookPresenter extends Presenter
 
     public function actionAdd(): void
     {
+        $this->requireAdmin();
+    }
+
+    private function requireAdmin(): void
+    {
         if (!$this->getUser()->isInRole('admin')) {
-            $this->error('You are not authorized to access this page.', 403);
+            $this->error('You are not authorized to perform this action.', 403);
         }
     }
 
