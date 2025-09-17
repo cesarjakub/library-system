@@ -76,7 +76,12 @@ class BookSearchService
             ],
         ]);
 
-        return array_map(fn(array $hit) => (int)$hit['_id'], $response['hits']['hits']);
+        $ids = [];
+        foreach ($response['hits']['hits'] as $hit) {
+            $ids[] = (int) $hit['_id'];
+        }
+
+        return $ids;
     }
 
     public function countSearchResultsWithFilters(array $params): int
