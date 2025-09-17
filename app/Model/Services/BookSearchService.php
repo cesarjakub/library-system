@@ -65,9 +65,7 @@ class BookSearchService
             $must[] = ['range' => ['year' => $range]];
         }
 
-        $queryBody = empty($must)
-            ? ['match_all' => (object)[]]
-            : ['bool' => ['must' => $must]];
+        $queryBody = empty($must) ? ['match_all' => (object)[]] : ['bool' => ['must' => $must]];
 
         $response = $this->client->search([
             'index' => 'books',
