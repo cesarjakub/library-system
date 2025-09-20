@@ -190,18 +190,18 @@ class BookPresenter extends Presenter
         $start = floor($minYear / 10) * 10;
         $end   = ceil($maxYear / 10) * 10;
 
-        $decades = [];
-        for ($y = $start; $y <= $end; $y += 10) {
-            $decades[$y] = $y;
+        $jump = [];
+        for ($y = $start; $y <= $end; $y += 30) {
+            $jump[$y] = $y;
         }
 
         $form = new Form;
         $form->addText('q', 'Search');
         $form->addSelect('author', 'Author:', $authors)
             ->setPrompt('All authors');
-        $form->addSelect('year_from', 'Year from:', $decades)
+        $form->addSelect('year_from', 'Year from:', $jump)
             ->setPrompt('From any');
-        $form->addSelect('year_to', 'Year to:', $decades)
+        $form->addSelect('year_to', 'Year to:', $jump)
             ->setPrompt('To any');
         $form->addSubmit('send', 'Filter');
 

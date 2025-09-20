@@ -3,7 +3,7 @@
 
 {if $user->isInRole('admin')}
     <div class="mb-3">
-        <a n:href="Book:add" class="btn btn-primary btn-sm me-2">+ Add new book</a>
+        <a n:href="Book:add" class="btn btn-success btn-sm me-2">+ Add new book</a>
         <a n:href="Loan:default" class="btn btn-secondary btn-sm">Loan overview</a>
     </div>
 {/if}
@@ -38,7 +38,7 @@
             </div>
 
             <div>
-                {input send, class: "btn btn-primary"}
+                {input send, class: "btn btn-success"}
             </div>
         </form>
     </div>
@@ -47,7 +47,7 @@
         {if !empty($activeFilters)}
             <div class="mb-3">
                 {foreach $activeFilters as $label => $value}
-                    <span class="badge bg-primary me-1">{$label}: {$value}</span>
+                    <span class="badge bg-success me-1">{$label}: {$value}</span>
                 {/foreach}
             </div>
         {/if}
@@ -58,7 +58,7 @@
                         <strong>{$book->getTitle()}</strong><br>
                         <small class="text-muted">{$book->getAuthor()} ({$book->getYear()})</small>
                     </div>
-                    <a n:href="Book:detail $book->getId()" class="btn btn-outline-primary btn-sm">Detail</a>
+                    <a n:href="Book:detail $book->getId()" class="btn btn-outline-success btn-sm">Detail</a>
                 </li>
             {/foreach}
         </ul>
@@ -67,15 +67,35 @@
         <nav aria-label="Book pagination">
             <ul class="pagination justify-content-center">
                 <li n:class="$paginator->isFirst() ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" n:href="this page => $paginator->page - 1">&laquo;</a>
+                    <a class="page-link text-success" n:href="this page => $paginator->page - 1">&laquo;</a>
                 </li>
-                {for $i = 1; $i <= $paginator->pageCount; $i++}
-                    <li n:class="$paginator->page === $i ? 'page-item active' : 'page-item'">
-                        <a class="page-link" n:href="this page => $i">{$i}</a>
+
+                {var $start = max(1, $paginator->page - 1)}
+                {var $end = min($paginator->pageCount, $paginator->page + 1)}
+
+                {if $start > 1}
+                    <li class="page-item"><a class="page-link text-success" n:href="this page => 1">1</a></li>
+                    {if $start > 2}<li class="page-item disabled"><span class="page-link">…</span></li>{/if}
+                {/if}
+
+                {for $i = $start; $i <= $end; $i++}
+                    <li class="page-item">
+                        <a
+                                class="page-link {if $paginator->page === $i}bg-success text-white{else}text-success{/if}"
+                                n:href="this page => $i"
+                        >
+                            {$i}
+                        </a>
                     </li>
                 {/for}
+
+                {if $end < $paginator->pageCount}
+                    {if $end < $paginator->pageCount - 1}<li class="page-item disabled"><span class="page-link">…</span></li>{/if}
+                    <li class="page-item"><a class="page-link text-success" n:href="this page => $paginator->pageCount">{$paginator->pageCount}</a></li>
+                {/if}
+
                 <li n:class="$paginator->isLast() ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" n:href="this page => $paginator->page + 1">&raquo;</a>
+                    <a class="page-link text-success" n:href="this page => $paginator->page + 1">&raquo;</a>
                 </li>
             </ul>
         </nav>
