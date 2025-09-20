@@ -80,10 +80,7 @@
 
                 {for $i = $start; $i <= $end; $i++}
                     <li class="page-item">
-                        <a
-                                class="page-link {if $paginator->page === $i}bg-success text-white{else}text-success{/if}"
-                                n:href="this page => $i"
-                        >
+                        <a class="page-link {if $paginator->page === $i}bg-success text-white{else}text-success{/if}" n:href="this page => $i">
                             {$i}
                         </a>
                     </li>
