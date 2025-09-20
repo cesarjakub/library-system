@@ -35,37 +35,8 @@ class BookSearchService
 
     public function searchWithFilters(array $params, int $from = 0, int $size = 10): array
     {
-        $must = [];
 
-        if (!empty($params['query'])) {
-            $must[] = [
-                'multi_match' => [
-                    'query' => $params['query'],
-                    'fields' => ['title^2', 'author', 'isbn'],
-                ],
-            ];
-        }
-
-        if (isset($params['author']) && $params['author'] !== '') {
-            $must[] = [
-                'match' => [
-                    'author' => $params['author'],
-                ],
-            ];
-        }
-
-        $range = [];
-        if (isset($params['year_from']) && $params['year_from'] !== null && $params['year_from'] !== '') {
-            $range['gte'] = (int)$params['year_from'];
-        }
-        if (isset($params['year_to']) && $params['year_to'] !== null && $params['year_to'] !== '') {
-            $range['lte'] = (int)$params['year_to'];
-        }
-        if (!empty($range)) {
-            $must[] = ['range' => ['year' => $range]];
-        }
-
-        $queryBody = empty($must) ? ['match_all' => (object)[]] : ['bool' => ['must' => $must]];
+        $queryBody = $this->buildFilters($params);
 
         $response = $this->client->search([
             'index' => 'books',
@@ -86,39 +57,8 @@ class BookSearchService
 
     public function countSearchResultsWithFilters(array $params): int
     {
-        $must = [];
 
-        if (!empty($params['query'])) {
-            $must[] = [
-                'multi_match' => [
-                    'query' => $params['query'],
-                    'fields' => ['title^2', 'author', 'isbn'],
-                ],
-            ];
-        }
-
-        if (isset($params['author']) && $params['author'] !== '') {
-            $must[] = [
-                'match' => [
-                    'author' => $params['author'],
-                ],
-            ];
-        }
-
-        $range = [];
-        if (isset($params['year_from']) && $params['year_from'] !== null && $params['year_from'] !== '') {
-            $range['gte'] = (int)$params['year_from'];
-        }
-        if (isset($params['year_to']) && $params['year_to'] !== null && $params['year_to'] !== '') {
-            $range['lte'] = (int)$params['year_to'];
-        }
-        if (!empty($range)) {
-            $must[] = ['range' => ['year' => $range]];
-        }
-
-        $queryBody = empty($must)
-            ? ['match_all' => (object)[]]
-            : ['bool' => ['must' => $must]];
+        $queryBody = $this->buildFilters($params);
 
         $response = $this->client->search([
             'index' => 'books',
@@ -129,5 +69,40 @@ class BookSearchService
         ]);
 
         return $response['hits']['total']['value'] ?? 0;
+    }
+
+    private function buildFilters(array $params): array
+    {
+        $must  = [];
+        $range = [];
+
+        if (!empty($params['query'])) {
+            $must[] = [
+                'multi_match' => [
+                    'query'  => $params['query'],
+                    'fields' => ['title^2', 'author', 'isbn'],
+                ],
+            ];
+        }
+
+        if (!empty($params['author'])) {
+            $must[] = [
+                'match' => ['author' => $params['author']],
+            ];
+        }
+
+        if (!empty($params['year_from'])) {
+            $range['gte'] = (int) $params['year_from'];
+        }
+        if (!empty($params['year_to'])) {
+            $range['lte'] = (int) $params['year_to'];
+        }
+        if ($range) {
+            $must[] = ['range' => ['year' => $range]];
+        }
+
+        return empty($must)
+            ? ['match_all' => (object)[]]
+            : ['bool' => ['must' => $must]];
     }
 }

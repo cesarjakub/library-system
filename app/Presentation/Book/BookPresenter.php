@@ -47,6 +47,21 @@ class BookPresenter extends Presenter
         $ids = $this->bookIndexer->searchWithFilters($searchParams, $from, $itemsPerPage);
         $books = $this->bookService->getByIds($ids);
 
+        $activeFilters = [];
+        if ($q) {
+            $activeFilters['Search'] = $q;
+        }
+        if ($author) {
+            $activeFilters['Author'] = $author;
+        }
+        if ($year_from) {
+            $activeFilters['Year from'] = $year_from;
+        }
+        if ($year_to) {
+            $activeFilters['Year to'] = $year_to;
+        }
+
+        $this->template->activeFilters = $activeFilters;
         $this->template->books = $books;
         $this->template->paginator = $paginator;
     }
@@ -109,8 +124,8 @@ class BookPresenter extends Presenter
             $this->error('Book was not found.');
         }
 
-        $this->bookService->delete($book);
         $this->bookIndexer->delete($book->getId());
+        $this->bookService->delete($book);
 
         $this->flashMessage('Book has been deleted.', 'success');
         $this->redirect('Book:default');
@@ -170,13 +185,24 @@ class BookPresenter extends Presenter
     protected function createComponentFilterForm(): Form
     {
         $authors = $this->bookService->getAllAuthors();
+        [$minYear, $maxYear] = $this->bookService->getYearRange();
+
+        $start = floor($minYear / 10) * 10;
+        $end   = ceil($maxYear / 10) * 10;
+
+        $decades = [];
+        for ($y = $start; $y <= $end; $y += 10) {
+            $decades[$y] = $y;
+        }
 
         $form = new Form;
         $form->addText('q', 'Search');
         $form->addSelect('author', 'Author:', $authors)
             ->setPrompt('All authors');
-        $form->addInteger('year_from', 'Year from:');
-        $form->addInteger('year_to', 'Year to:');
+        $form->addSelect('year_from', 'Year from:', $decades)
+            ->setPrompt('From any');
+        $form->addSelect('year_to', 'Year to:', $decades)
+            ->setPrompt('To any');
         $form->addSubmit('send', 'Filter');
 
         $form->onSuccess[] = $this->filterFormSucceeded(...);

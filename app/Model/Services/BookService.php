@@ -92,4 +92,20 @@ class BookService
         return $authors;
     }
 
+    public function getYearRange(): array
+    {
+        $books = $this->getAll();
+        if (!$books) {
+            $currentYear = (int) date('Y');
+            return [$currentYear, $currentYear];
+        }
+
+        $years = array_map(fn($book) => $book->getYear(), $books);
+
+        $min = min($years);
+        $max = max($years);
+
+        return [$min, $max];
+    }
+
 }

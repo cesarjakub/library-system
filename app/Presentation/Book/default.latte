@@ -25,14 +25,16 @@
                 {input author, class: "form-select"}
             </div>
 
-            <div class="mb-3">
-                {label year_from}Year from:{/label}
-                {input year_from, class: "form-control"}
-            </div>
+            <div class="mb-3 d-flex gap-2">
+                <div style="flex: 1;">
+                    {label year_from}Year from:{/label}
+                    {input year_from, class: "form-select"}
+                </div>
 
-            <div class="mb-3">
-                {label year_to}Year to:{/label}
-                {input year_to, class: "form-control"}
+                <div style="flex: 1;">
+                    {label year_to}Year to:{/label}
+                    {input year_to, class: "form-select"}
+                </div>
             </div>
 
             <div>
@@ -42,6 +44,13 @@
     </div>
 
     <div class="col-md-9">
+        {if !empty($activeFilters)}
+            <div class="mb-3">
+                {foreach $activeFilters as $label => $value}
+                    <span class="badge bg-primary me-1">{$label}: {$value}</span>
+                {/foreach}
+            </div>
+        {/if}
         <ul class="list-group mb-3">
             {foreach $books as $book}
                 <li class="list-group-item d-flex justify-content-between align-items-center">

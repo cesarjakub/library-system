@@ -19,8 +19,8 @@ class LoansPresenter extends ApiPresenter
 
     protected function startup(): void
     {
-        $apiKey = getenv('API_KEY_LOANS');
-        $this->addMiddleware(new ApiKeyMiddleware($this, $apiKey));
+        //$apiKey = getenv('API_KEY_LOANS');
+        $this->addMiddleware(new ApiKeyMiddleware($this, "tajny-apikey-124"));
         parent::startup();
     }
 
