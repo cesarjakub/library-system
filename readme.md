@@ -1,60 +1,98 @@
-# Knihovna
-![PHP](https://img.shields.io/badge/PHP-8.2-blue)
-![Nette Framework](https://img.shields.io/badge/Nette-3.2-red)
+# Nette Library Web Project
+A full-featured library management system built with [Nette Framework](https://nette.org/). It supports user registration/login, book catalog management, loan tracking, and RESTful APIs for external integrations.
 
-## Název
-Knihovna – systém pro správu knih a výpůjček s REST API a administrátorskými funkcemi.
+---
+## Features
 
-## Popis
-Tato aplikace umožňuje správu knih, uživatelů a výpůjček. Uživatelé se mohou registrovat, přihlašovat, prohlížet knihy a filtrovat je podle autora a roku vydání. Administrátoři mají možnost přidávat, upravovat a mazat knihy, nahrávat obálky, spravovat výpůjčky a přiřazovat role uživatelům.
+- **Authentication & Roles** – User registration/login with admin-only actions.
+- **Book Management** – Add, edit, filter, and delete books with cover upload and search filters (author, year range, query).
+- **Loan System** – Admins can create and manage book loans, with email notifications for borrowers.
+- **REST API** – Endpoints for books and loans (secured with API keys).
+- **Pagination & Filtering** – Efficient navigation of large data sets using `Nette\Utils\Paginator`.
+- **Latte Templates** – Clean, fast templating with Latte.
+- **Developer Tools** – Tracy debugger, Faker for seed data, PhpStan, Nette Tester.
 
-**Funkce:**
-- Registrace a přihlášení uživatelů
-- Přehled knih s filtrováním a stránkováním
-- Detail knihy s obálkou
-- Administrátorské funkce (CRUD knih, nahrávání obálek)
-- Správa výpůjček (vytvoření, označení jako vráceno)
-- REST API pro knihy a výpůjčky, chráněné API klíčem
+---
+## Tech Stack
 
-## Instalace
+- **Backend:** Nette Framework (Application, DI, Database, Forms, Security, Http, Mail)
+- **Templating:** Latte
+- **Database Layer:** Nettrine (Doctrine ORM + DBAL)
+- **Caching & Assets:** Nette Caching, Nette Assets
+- **Debugging:** Tracy
+- **Testing:** Nette Tester, PhpStan
+- **Other:** Contributte Console, Contributte Elasticsearch integration
+---
 
-1. Naklonujte repozitář:
-```bash
-git clone https://github.com/cesarjakub/library-system.git
-cd knihovna
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/nette-library-web.git
+   cd nette-library-web
+   ```
+   
+2. **Install dependencies**
+    ```bash
+    composer install
+    ```
+   
+3. **Run database migrations & seed data (if applicable)**
+
+    ```bash
+    vendor/bin/doctrine orm:schema-tool:update --force
+    ```
+4. **Start the development server**
+    ```bash
+    php -S localhost:8000 -t www
+    ```
+   - Visit http://localhost:8000.
+
+## API Overview
+
+### Authentication
+All API requests require a valid API key in the header:
+```dotenv
+API_KEY_BOOKS=tajny-apikey-123
+API_KEY_LOANS=tajny-apikey-124
 ```
 
-2. Nainstalujte závislosti přes Composer:
-```bash
-composer install
-```
 
-3. Vytvořte .env soubor s konfigurací databáze a API klíčů:
+### Books
+| Method | Endpoint              | Description           |
+|--------|----------------------|----------------------|
+| GET    | `/api/books`         | List all books        |
+| GET    | `/api/books/{id}`    | Get book detail       |
+| POST   | `/api/books`         | Create a new book     |
+| PUT    | `/api/books/{id}`    | Update book           |
+| DELETE | `/api/books/{id}`    | Delete book           |
 
-```ini
-API_KEY_KNIHY=vas_klic_pro_knihy
-API_KEY_VYPUJCKY=vas_klic_pro_vypujcky
-```
+### Loans
+| Method | Endpoint              | Description              |
+|--------|----------------------|-------------------------|
+| GET    | `/api/loans`         | List all loans           |
+| GET    | `/api/loans/{id}`    | Loan detail              |
+| POST   | `/api/loans`         | Create new loan          |
+| PUT    | `/api/loans/{id}`    | Mark loan as returned    |
 
-4. Spusťte lokální server:
-```bash
-Zkopírovat kód
-php -S localhost:8000 -t www
-```
+---
 
-5. Otevřete http://localhost:8000 v prohlížeči.
+## User Roles
 
-## Požadavky
-- PHP 8.0+
-- Composer
-- MySQL
+- **Guest** – Can register or log in.
+- **User** – Can view books and loan history.
+- **Admin** – Full access: manage books, loans, and users.
 
-## Použití
-- Přihlaste se jako uživatel nebo administrátor
-- Prohlížejte knihy, filtrujte podle autora nebo roku
-- Administrátor může přidávat knihy a obálky
-- REST API dostupné na /api/knihy a /api/vypujcky
+---
 
+## Testing
+- **Unit tests**:
+    ```bash
+    php vendor/bin/tester tests 
+    ```
+- **Debugging**: Tracy is enabled in development mode.
 
-## Autor
-Jakub Cesar – hlavní vývojář
+## Author
+
+- **Jakub César**
+- GitHub: [https://github.com/cesarjakub](https://github.com/cesarjakub)
