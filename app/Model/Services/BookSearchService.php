@@ -71,6 +71,36 @@ class BookSearchService
         return $response['hits']['total']['value'] ?? 0;
     }
 
+    public function getAuthorsAggregation(array $params, int $size = 100): array
+    {
+        $queryBody = $this->buildFilters($params);
+
+        $response = $this->client->search([
+            'index' => 'books',
+            'size'  => 0,
+            'body'  => [
+                'query' => $queryBody,
+                'aggs' => [
+                    'authors' => [
+                        'terms' => [
+                            'field' => 'author.keyword',
+                            'size'  => $size,
+                            'order' => ['_count' => 'desc'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $buckets = $response['aggregations']['authors']['buckets'] ?? [];
+        $result = [];
+        foreach ($buckets as $b) {
+            $result[$b['key']] = (int) $b['doc_count'];
+        }
+
+        return $result;
+    }
+
     private function buildFilters(array $params): array
     {
         $must  = [];
@@ -86,9 +116,15 @@ class BookSearchService
         }
 
         if (!empty($params['author'])) {
-            $must[] = [
-                'match' => ['author' => $params['author']],
-            ];
+            if (is_array($params['author'])) {
+                $must[] = [
+                    'terms' => ['author.keyword' => array_values($params['author'])],
+                ];
+            } else {
+                $must[] = [
+                    'match' => ['author' => $params['author']],
+                ];
+            }
         }
 
         if (!empty($params['year_from'])) {

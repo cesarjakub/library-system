@@ -9,8 +9,11 @@
 {/if}
 
 <div class="row">
-    <div class="col-md-3">
-        <form n:name=filterForm class="form mb-3 p-3 border rounded">
+    <div class="col-md-3 d-flex flex-column overflow-auto min-vh-100">
+        <div class="alert alert-success mb-3 text-center">
+            <strong>{$bookCount}</strong> <br> Books
+        </div>
+        <form n:name=filterForm class="form mb-3 p-3 border rounded sidebar-form">
             <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
                 <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
             </ul>
@@ -21,8 +24,20 @@
             </div>
 
             <div class="mb-3">
-                {label author}Author:{/label}
-                {input author, class: "form-select"}
+                {label author}Authors:{/label}
+                <div id="authors-container" class="border rounded p-2 overflow-auto" style="max-height:400px;">
+                    {foreach $authorsWithCounts as $name => $count}
+                        <div class="form-check">
+                            <input class="form-check-input author-checkbox" type="checkbox" name="author[]"
+                                   value="{$name|escape}"
+                                   id="author-{$name|replace:' ','-'}"
+                                    {if in_array($name, $selectedAuthors)} checked{/if}>
+                            <label class="form-check-label" for="author-{$name|replace:' ','-'}">
+                                {$name|escape} <small class="text-muted">({$count})</small>
+                            </label>
+                        </div>
+                    {/foreach}
+                </div>
             </div>
 
             <div class="mb-3 d-flex gap-2">
@@ -99,3 +114,4 @@
         {/if}
     </div>
 </div>
+{/block}

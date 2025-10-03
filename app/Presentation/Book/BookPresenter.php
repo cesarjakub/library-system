@@ -25,9 +25,9 @@ class BookPresenter extends Presenter
         }
     }
 
-    public function renderDefault(?string $q = null, ?string $author = null, ?int $year_from = null, ?int $year_to = null, int $page = 1): void
+    public function renderDefault(?string $q = null, ?array $author = null, ?int $year_from = null, ?int $year_to = null, int $page = 1): void
     {
-        $itemsPerPage = 10;
+        $itemsPerPage = 20;
 
         $paginator = new Paginator;
         $paginator->setItemsPerPage($itemsPerPage);
@@ -52,7 +52,7 @@ class BookPresenter extends Presenter
             $activeFilters['Search'] = $q;
         }
         if ($author) {
-            $activeFilters['Author'] = $author;
+            $activeFilters['Author'] = implode(', ', $author);
         }
         if ($year_from) {
             $activeFilters['Year from'] = $year_from;
@@ -60,10 +60,19 @@ class BookPresenter extends Presenter
         if ($year_to) {
             $activeFilters['Year to'] = $year_to;
         }
+        $aggParams = [
+            'query' => $q,
+            'year_from' => $year_from,
+            'year_to' => $year_to,
+        ];
+        $authorsWithCounts = $this->bookIndexer->getAuthorsAggregation($aggParams);
 
         $this->template->activeFilters = $activeFilters;
         $this->template->books = $books;
         $this->template->paginator = $paginator;
+        $this->template->bookCount = $totalItems;
+        $this->template->authorsWithCounts = $authorsWithCounts;
+        $this->template->selectedAuthors = $author ?? [];
     }
 
     public function renderDetail(int $id): void
@@ -184,7 +193,6 @@ class BookPresenter extends Presenter
 
     protected function createComponentFilterForm(): Form
     {
-        $authors = $this->bookService->getAllAuthors();
         [$minYear, $maxYear] = $this->bookService->getYearRange();
 
         $start = floor($minYear / 10) * 10;
@@ -195,10 +203,15 @@ class BookPresenter extends Presenter
             $jump[$y] = $y;
         }
 
+        $authorsWithCounts = $this->bookIndexer->getAuthorsAggregation([]);
+        $authorOptions = [];
+        foreach ($authorsWithCounts as $name => $count) {
+            $authorOptions[$name] = sprintf('%s (%d)', $name, $count);
+        }
+
         $form = new Form;
         $form->addText('q', 'Search');
-        $form->addSelect('author', 'Author:', $authors)
-            ->setPrompt('All authors');
+        $form->addCheckboxList('author', 'Author:', $authorOptions);
         $form->addSelect('year_from', 'Year from:', $jump)
             ->setPrompt('From any');
         $form->addSelect('year_to', 'Year to:', $jump)

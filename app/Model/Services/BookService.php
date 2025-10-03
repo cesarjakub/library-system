@@ -77,21 +77,6 @@ class BookService
         $this->bookRepository->delete($book);
     }
 
-    public function getAllAuthors(): array
-    {
-        $books = $this->getAll();
-        $authors = [];
-
-        foreach ($books as $book) {
-            $authors[$book->getAuthor()] = $book->getAuthor();
-        }
-
-        $authors = array_unique($authors);
-        asort($authors);
-
-        return $authors;
-    }
-
     public function getYearRange(): array
     {
         $books = $this->getAll();
