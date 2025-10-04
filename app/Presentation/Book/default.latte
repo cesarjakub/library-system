@@ -9,53 +9,55 @@
 {/if}
 
 <div class="row">
-    <div class="col-md-3 d-flex flex-column overflow-auto min-vh-100">
-        <div class="alert alert-success mb-3 text-center">
-            <strong>{$bookCount}</strong> <br> Books
+    <div class="col-md-3 d-flex flex-column">
+        <div class="position-sticky" style="top: 1rem;">
+            <div class="alert alert-success mb-3 text-center">
+                <strong>{$bookCount}</strong> <br> Books
+            </div>
+            <form n:name=filterForm class="form mb-3 p-3 border rounded sidebar-form">
+                <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
+                    <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+                </ul>
+
+                <div class="mb-3">
+                    {label q}Search:{/label}
+                    {input q, class: "form-control"}
+                </div>
+
+                <div class="mb-3">
+                    {label author}Authors:{/label}
+                    <div id="authors-container" class="border rounded p-2 overflow-auto" style="max-height:400px;">
+                        {foreach $authorsWithCounts as $name => $count}
+                            <div class="form-check">
+                                <input class="form-check-input author-checkbox" type="checkbox" name="author[]"
+                                       value="{$name|escape}"
+                                       id="author-{$name|replace:' ','-'}"
+                                        {if in_array($name, $selectedAuthors)} checked{/if}>
+                                <label class="form-check-label" for="author-{$name|replace:' ','-'}">
+                                    {$name|escape} <small class="text-muted">({$count})</small>
+                                </label>
+                            </div>
+                        {/foreach}
+                    </div>
+                </div>
+
+                <div class="mb-3 d-flex gap-2">
+                    <div style="flex: 1;">
+                        {label year_from}Year from:{/label}
+                        {input year_from, class: "form-select"}
+                    </div>
+
+                    <div style="flex: 1;">
+                        {label year_to}Year to:{/label}
+                        {input year_to, class: "form-select"}
+                    </div>
+                </div>
+
+                <div>
+                    {input send, class: "btn btn-success"}
+                </div>
+            </form>
         </div>
-        <form n:name=filterForm class="form mb-3 p-3 border rounded sidebar-form">
-            <ul class="errors list-unstyled text-danger mb-3" n:ifcontent>
-                <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
-            </ul>
-
-            <div class="mb-3">
-                {label q}Search:{/label}
-                {input q, class: "form-control"}
-            </div>
-
-            <div class="mb-3">
-                {label author}Authors:{/label}
-                <div id="authors-container" class="border rounded p-2 overflow-auto" style="max-height:400px;">
-                    {foreach $authorsWithCounts as $name => $count}
-                        <div class="form-check">
-                            <input class="form-check-input author-checkbox" type="checkbox" name="author[]"
-                                   value="{$name|escape}"
-                                   id="author-{$name|replace:' ','-'}"
-                                    {if in_array($name, $selectedAuthors)} checked{/if}>
-                            <label class="form-check-label" for="author-{$name|replace:' ','-'}">
-                                {$name|escape} <small class="text-muted">({$count})</small>
-                            </label>
-                        </div>
-                    {/foreach}
-                </div>
-            </div>
-
-            <div class="mb-3 d-flex gap-2">
-                <div style="flex: 1;">
-                    {label year_from}Year from:{/label}
-                    {input year_from, class: "form-select"}
-                </div>
-
-                <div style="flex: 1;">
-                    {label year_to}Year to:{/label}
-                    {input year_to, class: "form-select"}
-                </div>
-            </div>
-
-            <div>
-                {input send, class: "btn btn-success"}
-            </div>
-        </form>
     </div>
 
     <div class="col-md-9">
