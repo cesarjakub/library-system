@@ -13,15 +13,12 @@ Supports user registration/login, book catalog management, loan tracking, and RE
 1. [Features](#features)
 2. [Tech Stack](#tech-stack)
 3. [Installation](#installation)
-4. [Database & Seed Data](#database--seed-data)
-5. [Running the Project](#running-the-project)
-6. [API Documentation](#api-documentation)
-7. [User Roles & Permissions](#user-roles--permissions)
-8. [Testing & Debugging](#testing--debugging)
-9. [Deployment](#deployment)
-10. [Contributing](#contributing)
-11. [License](#license)
-12. [Author](#author)
+4. [Running the Project](#running-the-project)
+5. [API Documentation](#api-documentation)
+6. [User Roles & Permissions](#user-roles--permissions)
+7. [Testing & Debugging](#testing--debugging)
+8. [License](#license)
+9. [Author](#author)
 
 ---
 
